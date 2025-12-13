@@ -1,0 +1,54 @@
+<section class="hero">
+    <header>
+        <h1>Queer History of the World</h1>
+        <p>Explore LGBTQIA+ histories by place, time, identity, and theme.</p>
+    </header>
+
+    <section class="hero-map" aria-label="Global map of queer history">
+        <!-- World map canvas / SVG -->
+        <div id="world-map"></div>
+
+        <div class="map-controls">
+            <label for="time-slider">Year</label>
+            <input type="range" id="time-slider" name="year" min="1800" max="2025" value="2025">
+            <fieldset>
+                <legend>Map layer</legend>
+                <label><input type="radio" name="map-layer" value="rights" checked> Rights</label>
+                <label><input type="radio" name="map-layer" value="places"> Places</label>
+                <label><input type="radio" name="map-layer" value="events"> Events</label>
+            </fieldset>
+        </div>
+    </section>
+
+    <section class="search-and-entries">
+        <form class="site-search" role="search">
+            <label for="site-search-input">Search country, city, place, event…</label>
+            <input id="site-search-input" name="q" type="search">
+            <button type="submit">Search</button>
+        </form>
+
+        <nav class="entry-points" aria-label="Browse by section">
+            <ul>
+                <li><a href="./countries.html">By Country</a></li>
+                <li><a href="./cities.html">By City</a></li>
+                <li><a href="./history.html">History & Timelines</a></li>
+                <li><a href="./rights.html">Rights & Law</a></li>
+                <li><a href="./culture.html">Culture & Media</a></li>
+                <li><a href="./identities.html">Identities</a></li>
+                <li><a href="./places.html">Places & Organizations</a></li>
+                <li><a href="./activism.html">Activism & Movements</a></li>
+            </ul>
+        </nav>
+    </section>
+
+    <section class="featured" aria-label="Featured timelines and discoveries">
+        <article>
+            <h2>This month in queer history</h2>
+            <div id="featured-timeline"></div>
+        </article>
+        <article>
+            <h2>Discover</h2>
+            <div id="discovery-strip"></div>
+        </article>
+    </section>
+</section>

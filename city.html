@@ -1,0 +1,103 @@
+<article class="country-page" data-wikidata-id="{{QID}}">
+    <header class="country-header">
+        <nav aria-label="Breadcrumb">
+            <ol>
+                <li><a href="./">World</a></li>
+                <li aria-current="page">{{country_label}}</li>
+            </ol>
+        </nav>
+
+        <div class="country-title-block">
+            <h1>{{country_label}}</h1>
+            <p class="subtitle">Queer history, rights, culture, and activism.</p>
+            <div class="country-meta">
+                <span class="region">{{region_label}}</span>
+                <span class="population">{{population}}</span>
+            </div>
+            <div class="country-map" aria-label="Country overview map">
+                <div id="country-map-{{QID}}"></div>
+            </div>
+        </div>
+    </header>
+
+    <section class="country-overview" aria-label="Overview">
+        <div class="legal-status-summary">
+            <h2>Legal status today</h2>
+            <div id="legal-status-grid-{{QID}}"></div>
+        </div>
+        <div class="key-milestones">
+            <h2>Key milestones</h2>
+            <div id="country-key-timeline-{{QID}}"></div>
+        </div>
+    </section>
+
+    <section class="country-history" aria-label="History and timelines">
+        <header>
+            <h2>History & timelines</h2>
+            <p class="narrative-intro" data-source="wikipedia">{{history_intro}}</p>
+        </header>
+        <div class="timeline-filters">
+            <!-- theme / identity filters -->
+        </div>
+        <div id="country-history-timeline-{{QID}}"></div>
+    </section>
+
+    <section class="country-rights" aria-label="Rights and law">
+        <header>
+            <h2>Rights & law</h2>
+        </header>
+        <div id="country-rights-timeline-{{QID}}"></div>
+        <div id="country-rights-table-{{QID}}"></div>
+    </section>
+
+    <section class="country-culture" aria-label="Culture and society">
+        <header>
+            <h2>Culture & society</h2>
+        </header>
+        <div id="country-culture-grid-{{QID}}"></div>
+    </section>
+
+    <section class="country-arts-media" aria-label="Arts and media">
+        <header>
+            <h2>Arts & media</h2>
+        </header>
+        <div id="country-media-grid-{{QID}}"></div>
+    </section>
+
+    <section class="country-places" aria-label="Places and organizations">
+        <header>
+            <h2>Places & organizations</h2>
+        </header>
+        <div class="places-layout">
+            <div class="places-map" aria-label="Queer places map">
+                <div id="country-places-map-{{QID}}"></div>
+            </div>
+            <div class="places-list">
+                <div id="country-places-list-{{QID}}"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="country-activism" aria-label="Activism and movements">
+        <header>
+            <h2>Activism & movements</h2>
+        </header>
+        <div id="country-activism-timeline-{{QID}}"></div>
+        <div id="country-activism-orgs-{{QID}}"></div>
+    </section>
+
+    <section class="country-identities" aria-label="Identity-specific histories">
+        <header>
+            <h2>Identity-specific histories</h2>
+        </header>
+        <div class="identity-tabs">
+            <!-- tabs: lesbian / gay men / bi / trans / intersex / other -->
+        </div>
+        <div id="country-identity-content-{{QID}}"></div>
+    </section>
+
+    <aside class="country-data-notes" aria-label="Data sources and gaps">
+        <h2>Data, sources, and gaps</h2>
+        <div id="country-data-provenance-{{QID}}"></div>
+    </aside>
+</article>
