@@ -177,8 +177,8 @@
         var withImg = people.filter(function (b) { return wd.val(b, 'image'); });
         var show = withImg.length >= 6 ? withImg.slice(0, 6) : people.slice(0, 6);
 
-        var monthNames = ['January','February','March','April','May','June',
-                          'July','August','September','October','November','December'];
+        var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
 
         var heading = wd.el('p', 'featured-month-label',
             'Born in ' + monthNames[now.getMonth()]);
@@ -321,7 +321,7 @@
 
         var sparql = [
             'SELECT ?event ?eventLabel ?date ?country ?countryLabel ?image ?participants WHERE {',
-            '  ?event wdt:P31 wd:Q51404 ;',
+            '  ?event wdt:P31/wdt:P279* wd:Q51404 ;',
             '         wdt:P585 ?date .',
             '  OPTIONAL { ?event wdt:P17 ?country . }',
             '  OPTIONAL { ?event wdt:P18 ?image . }',
@@ -330,7 +330,7 @@
             '  ' + wd.labelService('en'),
             '}',
             'ORDER BY DESC(?date)',
-            'LIMIT 8'
+            'LIMIT 10'
         ].join('\n');
 
         wd.query(sparql)

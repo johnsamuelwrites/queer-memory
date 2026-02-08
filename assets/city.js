@@ -335,13 +335,24 @@
 
             var links = wd.el('div', 'history-card__links');
             var articleUrl = wd.val(b, 'article');
-            var link = document.createElement('a');
-            link.href = articleUrl || wd.entityUrl(qid);
-            link.target = '_blank';
-            link.rel = 'noopener';
-            link.textContent = articleUrl ? 'Wikipedia' : 'Wikidata';
-            link.className = 'identity-card__link';
-            links.appendChild(link);
+            if (articleUrl) {
+                var wp = document.createElement('a');
+                wp.href = articleUrl;
+                wp.target = '_blank';
+                wp.rel = 'noopener';
+                wp.textContent = 'Wikipedia';
+                wp.className = 'identity-card__link';
+                links.appendChild(wp);
+            }
+
+            var wdLink = document.createElement('a');
+            wdLink.href = wd.entityUrl(qid);
+            wdLink.target = '_blank';
+            wdLink.rel = 'noopener';
+            wdLink.textContent = 'Wikidata';
+            wdLink.className = 'identity-card__link';
+            links.appendChild(wdLink);
+
             card.appendChild(links);
 
             container.appendChild(card);
