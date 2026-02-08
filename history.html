@@ -1,11 +1,15 @@
-<!DOCTYPE html>
 <html lang="en">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Queer Memory – {{page_title}}</title>
+        <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+        <title>Queer Memory - History & Timelines</title>
         <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme before first paint to prevent flash */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+        </script>
     </head>
 
     <body>
@@ -17,7 +21,7 @@
                 <ul>
                     <li><a href="./countries.html">Countries</a></li>
                     <li><a href="./cities.html">Cities</a></li>
-                    <li><a href="./history.html">History</a></li>
+                    <li><a href="./history.html" aria-current="page">History</a></li>
                     <li><a href="./rights.html">Rights</a></li>
                     <li><a href="./culture.html">Culture</a></li>
                     <li><a href="./identities.html">Identities</a></li>
@@ -29,7 +33,82 @@
         </header>
 
         <main id="main-content" role="main">
-            {{page_content}}
+
+            <!-- Page header -->
+            <header class="page-header">
+                <h1>History & Timelines</h1>
+                <p class="page-intro">
+                    Trace LGBTQIA+ history across eras, movements, and regions. This
+                    page surfaces timelines, turning points, and notable figures using
+                    data drawn live from
+                    <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>.
+                </p>
+            </header>
+
+            <!-- Section 1: Timelines by region -->
+            <section class="history-section" aria-label="Timelines by region">
+                <header>
+                    <h2>Timelines by Region</h2>
+                    <p class="section-desc">
+                        Explore regional timelines and history pages that map key
+                        events, movements, and milestones across places.
+                    </p>
+                </header>
+                <div id="history-eras-grid" class="history-eras-grid"></div>
+            </section>
+
+            <!-- Section 2: Movements & turning points -->
+            <section class="history-section" aria-label="Movements and turning points">
+                <header>
+                    <h2>Movements, Pride, and Protest</h2>
+                    <p class="section-desc">
+                        Movement histories, pride records, and protest events that
+                        reshaped visibility and rights around the world.
+                    </p>
+                </header>
+                <div id="history-movements-grid" class="history-movements-grid"></div>
+            </section>
+
+            <!-- Section 3: People & firsts -->
+            <section class="history-section" aria-label="People and activists">
+                <header>
+                    <h2>People & Activists</h2>
+                    <p class="section-desc">
+                        Notable LGBTQ rights activists and organizers documented in
+                        Wikidata, connected to their biographies and key dates.
+                    </p>
+                </header>
+                <div id="history-people-grid" class="history-people-grid"></div>
+            </section>
+
+            <!-- Section 4: Global hotspots over time -->
+            <section class="history-section" aria-label="Global hotspots over time">
+                <header>
+                    <h2>Global Hotspots Over Time</h2>
+                    <p class="section-desc">
+                        Where documented events concentrate today, based on the
+                        number of LGBTQ+ events linked to each country.
+                    </p>
+                </header>
+                <div id="history-hotspots" class="history-hotspots"></div>
+            </section>
+
+            <!-- Data provenance note -->
+            <aside class="history-data-note" aria-label="About this data">
+                <h2>About this data</h2>
+                <p>
+                    All data on this page is queried live from the
+                    <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
+                    using SPARQL. Coverage reflects how well events, people, and
+                    movements have been modelled on Wikidata.
+                </p>
+                <p>
+                    Gaps remain, especially for pre-20th-century records and
+                    non-Western histories. You can help improve coverage by
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">contributing to WikiProject LGBT</a>.
+                </p>
+            </aside>
+
         </main>
 
         <footer id="site-footer" role="contentinfo">
@@ -37,6 +116,9 @@
         </footer>
 
         <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/wikidata-models.js"></script>
+        <script src="./assets/history.js"></script>
     </body>
 
 </html>
