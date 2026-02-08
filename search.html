@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+        <title>Queer Memory – Search</title>
+        <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme before first paint to prevent flash */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+        </script>
+    </head>
+
+    <body>
+        <header id="site-header" role="banner">
+            <div class="logo">
+                <a href="./index.html">Queer Memory</a>
+            </div>
+            <nav id="site-nav" aria-label="Main navigation">
+                <ul>
+                    <li><a href="./countries.html">Countries</a></li>
+                    <li><a href="./cities.html">Cities</a></li>
+                    <li><a href="./history.html">History</a></li>
+                    <li><a href="./rights.html">Rights</a></li>
+                    <li><a href="./culture.html">Culture</a></li>
+                    <li><a href="./identities.html">Identities</a></li>
+                    <li><a href="./places.html">Places</a></li>
+                    <li><a href="./activism.html">Activism</a></li>
+                    <li><a href="./data.html">Data & Methodology</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main id="main-content" role="main">
+
+            <!-- Page header -->
+            <header class="page-header">
+                <h1>Search</h1>
+                <p class="page-intro">
+                    Search across LGBTQIA+ people, places, events, organizations, and
+                    more — powered by live Wikidata queries.
+                </p>
+            </header>
+
+            <!-- Search form -->
+            <section class="search-page-form" aria-label="Search form">
+                <form id="search-form" class="search-bar" role="search">
+                    <label for="search-input" class="visually-hidden">Search Wikidata</label>
+                    <input id="search-input" name="q" type="search"
+                           placeholder="Search people, places, events, organizations…"
+                           autocomplete="off" autofocus>
+                    <button type="submit">Search</button>
+                </form>
+            </section>
+
+            <!-- Results -->
+            <section class="search-results-section" aria-label="Search results">
+                <div id="search-status" class="search-status"></div>
+                <div id="search-results" class="search-results"></div>
+            </section>
+
+        </main>
+
+        <footer id="site-footer" role="contentinfo">
+            <p>
+                Built on
+                <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>,
+                <a href="https://en.wikipedia.org/" target="_blank" rel="noopener">Wikipedia</a>, and
+                <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>.
+                Data is indicative and incomplete.
+                Licensed under <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank" rel="noopener">GNU AGPL v3</a>.
+            </p>
+        </footer>
+
+        <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/wikidata-models.js"></script>
+        <script src="./assets/search.js"></script>
+    </body>
+
+</html>

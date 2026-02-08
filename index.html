@@ -34,67 +34,165 @@
         </header>
 
         <main id="main-content" role="main">
-            <section class="hero">
+
+            <!-- ========== HERO ========== -->
+            <section class="hero" aria-label="Introduction">
                 <header>
                     <h1>Queer History of the World</h1>
-                    <p>Explore LGBTQIA+ histories by place, time, identity, and theme.</p>
+                    <p>
+                        Explore LGBTQIA+ histories across every continent, powered by
+                        open data from
+                        <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>,
+                        <a href="https://en.wikipedia.org/" target="_blank" rel="noopener">Wikipedia</a>, and
+                        <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>.
+                    </p>
                 </header>
 
-                <section class="hero-map" aria-label="Global map of queer history">
-                    <!-- World map canvas / SVG -->
-                    <div id="world-map"></div>
-
-                    <div class="map-controls">
-                        <label for="time-slider">Year</label>
-                        <input type="range" id="time-slider" name="year" min="1800" max="2025" value="2025">
-                        <fieldset>
-                            <legend>Map layer</legend>
-                            <label><input type="radio" name="map-layer" value="rights" checked> Rights</label>
-                            <label><input type="radio" name="map-layer" value="places"> Places</label>
-                            <label><input type="radio" name="map-layer" value="events"> Events</label>
-                        </fieldset>
-                    </div>
-                </section>
-
-                <section class="search-and-entries">
-                    <form class="site-search" role="search">
-                        <label for="site-search-input">Search country, city, place, event…</label>
-                        <input id="site-search-input" name="q" type="search" placeholder="Search country, city, place, event…">
-                        <button type="submit">Search</button>
-                    </form>
-
-                    <nav class="entry-points" aria-label="Browse by section">
-                        <ul>
-                            <li><a href="./countries.html">By Country</a></li>
-                            <li><a href="./cities.html">By City</a></li>
-                            <li><a href="./history.html">History & Timelines</a></li>
-                            <li><a href="./rights.html">Rights & Law</a></li>
-                            <li><a href="./culture.html">Culture & Media</a></li>
-                            <li><a href="./identities.html">Identities</a></li>
-                            <li><a href="./places.html">Places & Organizations</a></li>
-                            <li><a href="./activism.html">Activism & Movements</a></li>
-                        </ul>
-                    </nav>
-                </section>
-
-                <section class="featured" aria-label="Featured timelines and discoveries">
-                    <article>
-                        <h2>This month in queer history</h2>
-                        <div id="featured-timeline"></div>
-                    </article>
-                    <article>
-                        <h2>Discover</h2>
-                        <div id="discovery-strip"></div>
-                    </article>
-                </section>
+                <!-- Live stats — animated counters from Wikidata -->
+                <div id="home-stats" class="home-stats" aria-label="Live data statistics"></div>
             </section>
+
+            <!-- ========== BROWSE SECTIONS ========== -->
+            <section class="home-browse" aria-label="Browse the collection">
+                <h2 class="visually-hidden">Browse</h2>
+
+                <form class="site-search" role="search" action="./search.html" method="GET">
+                    <label for="site-search-input" class="visually-hidden">Search people, places, events…</label>
+                    <input id="site-search-input" name="q" type="search"
+                           placeholder="Search people, places, events…">
+                    <button type="submit">Search</button>
+                </form>
+
+                <nav class="entry-points" aria-label="Browse by section">
+                    <ul>
+                        <li>
+                            <a href="./countries.html">
+                                <span class="entry-icon" aria-hidden="true">🌍</span>
+                                <span class="entry-label">Countries</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./cities.html">
+                                <span class="entry-icon" aria-hidden="true">🏙️</span>
+                                <span class="entry-label">Cities</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./history.html">
+                                <span class="entry-icon" aria-hidden="true">📜</span>
+                                <span class="entry-label">History & Timelines</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./rights.html">
+                                <span class="entry-icon" aria-hidden="true">⚖️</span>
+                                <span class="entry-label">Rights & Law</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./culture.html">
+                                <span class="entry-icon" aria-hidden="true">🎭</span>
+                                <span class="entry-label">Culture & Media</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./identities.html">
+                                <span class="entry-icon" aria-hidden="true">🌈</span>
+                                <span class="entry-label">Identities</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./places.html">
+                                <span class="entry-icon" aria-hidden="true">📍</span>
+                                <span class="entry-label">Places & Memory</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="./activism.html">
+                                <span class="entry-icon" aria-hidden="true">✊</span>
+                                <span class="entry-label">Activism & Movements</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- ========== FEATURED: This month + Discover ========== -->
+            <section class="home-featured" aria-label="Featured content">
+                <div class="home-featured__col">
+                    <h2>This Month in Queer History</h2>
+                    <div id="featured-timeline"></div>
+                </div>
+                <div class="home-featured__col">
+                    <h2>Discover</h2>
+                    <div id="discovery-strip"></div>
+                </div>
+            </section>
+
+            <!-- ========== PRIDE EVENTS ========== -->
+            <section class="home-section" aria-label="Recent pride events">
+                <header>
+                    <h2>Recent Pride Events</h2>
+                    <p class="section-desc">
+                        The latest pride parades and celebrations documented on Wikidata.
+                        <a href="./activism.html">See all activism &rarr;</a>
+                    </p>
+                </header>
+                <div id="home-pride"></div>
+            </section>
+
+            <!-- ========== PRIDE FLAGS ========== -->
+            <section class="home-section home-section--flags" aria-label="Pride flags">
+                <header>
+                    <h2>Pride Flags</h2>
+                    <p class="section-desc">
+                        Symbols of identity and solidarity, each with its own story.
+                    </p>
+                </header>
+                <div id="home-flags"></div>
+            </section>
+
+            <!-- ========== ABOUT / CTA ========== -->
+            <section class="home-about" aria-label="About this project">
+                <div class="home-about__text">
+                    <h2>Built on Open Knowledge</h2>
+                    <p>
+                        Queer Memory draws every fact, date, and image from the open
+                        Wikimedia ecosystem. Nothing is hard-coded: each page queries
+                        live structured data from Wikidata, labels from Wikipedia,
+                        and media from Wikimedia Commons.
+                    </p>
+                    <p>
+                        The data is always growing. You can help fill gaps and tell
+                        untold stories by contributing to
+                        <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">WikiProject LGBT</a>
+                        on Wikidata.
+                    </p>
+                    <div class="home-about__links">
+                        <a href="./data.html" class="btn btn--primary">Data & Methodology</a>
+                        <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT"
+                           target="_blank" rel="noopener"
+                           class="btn btn--pride">Contribute on Wikidata</a>
+                    </div>
+                </div>
+            </section>
+
         </main>
 
         <footer id="site-footer" role="contentinfo">
-            <p>Built on Wikidata, Wikipedia, and Wikimedia Commons. Data is indicative and incomplete.</p>
+            <p>
+                Built on
+                <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>,
+                <a href="https://en.wikipedia.org/" target="_blank" rel="noopener">Wikipedia</a>, and
+                <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>.
+                Data is indicative and incomplete.
+                Licensed under <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank" rel="noopener">GNU AGPL v3</a>.
+            </p>
         </footer>
 
         <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/home.js"></script>
     </body>
 
 </html>
