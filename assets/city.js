@@ -293,6 +293,9 @@
     function loadDataNote(qid) {
         var container = document.getElementById('city-data-note');
         if (!container) return;
+        if (container.textContent && container.textContent.trim()) {
+            return;
+        }
         container.textContent = 'Data is loaded live from Wikidata for ' + qid +
             '. Coverage varies by topic and region.';
     }
