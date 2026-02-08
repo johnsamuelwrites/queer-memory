@@ -1,11 +1,15 @@
-<!DOCTYPE html>
 <html lang="en">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Queer Memory – {{page_title}}</title>
+        <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+        <title>Queer Memory - Cities</title>
         <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme before first paint to prevent flash */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+        </script>
     </head>
 
     <body>
@@ -16,7 +20,7 @@
             <nav id="site-nav" aria-label="Main navigation">
                 <ul>
                     <li><a href="./countries.html">Countries</a></li>
-                    <li><a href="./cities.html">Cities</a></li>
+                    <li><a href="./cities.html" aria-current="page">Cities</a></li>
                     <li><a href="./history.html">History</a></li>
                     <li><a href="./rights.html">Rights</a></li>
                     <li><a href="./culture.html">Culture</a></li>
@@ -29,7 +33,44 @@
         </header>
 
         <main id="main-content" role="main">
-            {{page_content}}
+
+            <!-- Page header -->
+            <header class="page-header">
+                <h1>Cities</h1>
+                <p class="page-intro">
+                    Cities appear here if they host LGBTQIA+ events, places, or
+                    organizations documented on Wikidata. Click a city to see
+                    details.
+                </p>
+            </header>
+
+            <section class="locations-section" aria-label="Cities with data">
+                <header>
+                    <h2>Cities with LGBTQIA+ Records</h2>
+                    <p class="section-desc">
+                        Based on cities linked to LGBTQ+ events, places, or
+                        organizations in Wikidata.
+                    </p>
+                </header>
+
+                <div class="location-controls">
+                    <label class="visually-hidden" for="cities-search">Search cities</label>
+                    <input id="cities-search" class="location-search" type="search" placeholder="Search city">
+                    <span id="cities-count" class="location-count"></span>
+                </div>
+
+                <div id="cities-grid" class="location-grid"></div>
+            </section>
+
+            <aside class="locations-data-note" aria-label="About this data">
+                <h2>About this data</h2>
+                <p>
+                    Data is queried live from the
+                    <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
+                    using LGBTQIA+ event, place, and organization models.
+                </p>
+            </aside>
+
         </main>
 
         <footer id="site-footer" role="contentinfo">
@@ -37,6 +78,8 @@
         </footer>
 
         <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/cities.js"></script>
     </body>
 
 </html>
