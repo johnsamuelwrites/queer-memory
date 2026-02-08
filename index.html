@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="./assets/styles.css">
         <script>
             /* Apply saved/preferred theme before first paint to prevent flash */
-            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+            (function () { var t = localStorage.getItem('queer-memory-theme'); if (!t) t = matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'; document.documentElement.setAttribute('data-theme', t) })();
         </script>
     </head>
 
@@ -38,7 +38,7 @@
             <!-- ========== HERO ========== -->
             <section class="hero" aria-label="Introduction">
                 <header>
-                    <h1>Queer History of the World</h1>
+                    <h1>Queer Memory - Queer History of the World</h1>
                     <p>
                         Explore LGBTQIA+ histories across every continent, powered by
                         open data from
@@ -58,8 +58,7 @@
 
                 <form class="site-search" role="search" action="./search.html" method="GET">
                     <label for="site-search-input" class="visually-hidden">Search people, places, events…</label>
-                    <input id="site-search-input" name="q" type="search"
-                           placeholder="Search people, places, events…">
+                    <input id="site-search-input" name="q" type="search" placeholder="Search people, places, events…">
                     <button type="submit">Search</button>
                 </form>
 
@@ -165,14 +164,14 @@
                     <p>
                         The data is always growing. You can help fill gaps and tell
                         untold stories by contributing to
-                        <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">WikiProject LGBT</a>
+                        <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank"
+                            rel="noopener">WikiProject LGBT</a>
                         on Wikidata.
                     </p>
                     <div class="home-about__links">
                         <a href="./data.html" class="btn btn--primary">Data & Methodology</a>
-                        <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT"
-                           target="_blank" rel="noopener"
-                           class="btn btn--pride">Contribute on Wikidata</a>
+                        <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener"
+                            class="btn btn--pride">Contribute on Wikidata</a>
                     </div>
                 </div>
             </section>
@@ -186,7 +185,8 @@
                 <a href="https://en.wikipedia.org/" target="_blank" rel="noopener">Wikipedia</a>, and
                 <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>.
                 Data is indicative and incomplete.
-                Licensed under <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank" rel="noopener">GNU AGPL v3</a>.
+                Licensed under <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank"
+                    rel="noopener">GNU AGPL v3</a>.
             </p>
         </footer>
 
