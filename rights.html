@@ -4,8 +4,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Queer Memory – {{page_title}}</title>
+        <title>Queer Memory – Rights & Law</title>
         <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme before first paint to prevent flash */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+        </script>
     </head>
 
     <body>
@@ -18,7 +22,7 @@
                     <li><a href="./countries.html">Countries</a></li>
                     <li><a href="./cities.html">Cities</a></li>
                     <li><a href="./history.html">History</a></li>
-                    <li><a href="./rights.html">Rights</a></li>
+                    <li><a href="./rights.html" aria-current="page">Rights</a></li>
                     <li><a href="./culture.html">Culture</a></li>
                     <li><a href="./identities.html">Identities</a></li>
                     <li><a href="./places.html">Places</a></li>
@@ -29,7 +33,86 @@
         </header>
 
         <main id="main-content" role="main">
-            {{page_content}}
+
+            <!-- Page header -->
+            <header class="page-header">
+                <h1>Rights & Law</h1>
+                <p class="page-intro">
+                    Track the global landscape of LGBTQ+ legal rights, from
+                    marriage equality and decriminalization to anti-discrimination
+                    protections. All data is drawn live from
+                    <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>,
+                    following the
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT/Models" target="_blank" rel="noopener">WikiProject LGBT data models</a>.
+                </p>
+            </header>
+
+            <!-- Section 1: Rights topics -->
+            <section class="rights-section" aria-label="Rights topics">
+                <header>
+                    <h2>Rights by Topic</h2>
+                    <p class="section-desc">
+                        Key legal milestones for LGBTQ+ people, modelled in Wikidata as
+                        classes under
+                        <a href="https://www.wikidata.org/wiki/Q17898" target="_blank" rel="noopener">Q17898</a>
+                        (LGBT rights by country or territory). Each topic counts how many
+                        regions have a Wikidata entry. Click <strong>Show regions</strong>
+                        to see the full list.
+                    </p>
+                </header>
+                <div id="rights-topics-grid" class="rights-topics-grid"></div>
+            </section>
+
+            <!-- Section 2: Country rights articles -->
+            <section class="rights-section" aria-label="Rights by country">
+                <header>
+                    <h2>Rights by Country & Territory</h2>
+                    <p class="section-desc">
+                        Every country and territory that has an
+                        <a href="https://www.wikidata.org/wiki/Q17898" target="_blank" rel="noopener">"LGBT rights by country"</a>
+                        article on Wikidata. Click any entry to read the full
+                        Wikipedia article or Wikidata page.
+                    </p>
+                </header>
+                <div id="rights-countries-grid" class="rights-countries-grid"></div>
+            </section>
+
+            <!-- Section 3: Discrimination & violence -->
+            <section class="rights-section" aria-label="Discrimination and violence">
+                <header>
+                    <h2>Discrimination & Violence</h2>
+                    <p class="section-desc">
+                        Wikidata documents patterns of discrimination
+                        (<a href="https://www.wikidata.org/wiki/Q130297530" target="_blank" rel="noopener">Q130297530</a>)
+                        and violence
+                        (<a href="https://www.wikidata.org/wiki/Q130297534" target="_blank" rel="noopener">Q130297534</a>)
+                        against LGBT people by geographic region. These entries help
+                        surface the human cost of legal inequality.
+                    </p>
+                </header>
+                <div id="rights-discrimination-grid" class="rights-discrimination-grid"></div>
+            </section>
+
+            <!-- Data provenance note -->
+            <aside class="rights-data-note" aria-label="About this data">
+                <h2>About this data</h2>
+                <p>
+                    All data on this page is queried live from the
+                    <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
+                    using SPARQL. The rights model follows the
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT/Models" target="_blank" rel="noopener">WikiProject LGBT data models</a>,
+                    which define classes for rights topics such as
+                    same-sex marriage (<a href="https://www.wikidata.org/wiki/Q130262462" target="_blank" rel="noopener">Q130262462</a>),
+                    decriminalization (<a href="https://www.wikidata.org/wiki/Q130286663" target="_blank" rel="noopener">Q130286663</a>),
+                    and transgender rights (<a href="https://www.wikidata.org/wiki/Q123237562" target="_blank" rel="noopener">Q123237562</a>).
+                </p>
+                <p>
+                    Coverage varies greatly between countries. Western nations tend to
+                    have more detailed entries. You can help improve coverage by
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">contributing to WikiProject LGBT</a>.
+                </p>
+            </aside>
+
         </main>
 
         <footer id="site-footer" role="contentinfo">
@@ -37,6 +120,9 @@
         </footer>
 
         <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/wikidata-models.js"></script>
+        <script src="./assets/rights.js"></script>
     </body>
 
 </html>

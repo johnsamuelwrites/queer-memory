@@ -4,8 +4,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Queer Memory – {{page_title}}</title>
+        <title>Queer Memory – Identities</title>
         <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme before first paint to prevent flash */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+        </script>
     </head>
 
     <body>
@@ -20,7 +24,7 @@
                     <li><a href="./history.html">History</a></li>
                     <li><a href="./rights.html">Rights</a></li>
                     <li><a href="./culture.html">Culture</a></li>
-                    <li><a href="./identities.html">Identities</a></li>
+                    <li><a href="./identities.html" aria-current="page">Identities</a></li>
                     <li><a href="./places.html">Places</a></li>
                     <li><a href="./activism.html">Activism</a></li>
                     <li><a href="./data.html">Data & Methodology</a></li>
@@ -29,7 +33,81 @@
         </header>
 
         <main id="main-content" role="main">
-            {{page_content}}
+
+            <!-- Page header -->
+            <header class="page-header">
+                <h1>Identities</h1>
+                <p class="page-intro">
+                    Explore the rich diversity of LGBTQIA+ sexual orientations and gender
+                    identities documented in Wikidata. Each card shows data drawn live from
+                    <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>,
+                    the free knowledge base behind Wikipedia.
+                </p>
+            </header>
+
+            <!-- Section 1: Sexual Orientations -->
+            <section class="identities-section" aria-label="Sexual orientations">
+                <header>
+                    <h2>Sexual Orientations</h2>
+                    <p class="section-desc">
+                        Sexual orientations as catalogued in Wikidata
+                        (<a href="https://www.wikidata.org/wiki/Q17888" target="_blank" rel="noopener">Q17888</a>).
+                        Click <strong>Notable people</strong> on any card to discover individuals
+                        linked to that orientation via Wikidata property
+                        <a href="https://www.wikidata.org/wiki/Property:P91" target="_blank" rel="noopener">P91</a>.
+                    </p>
+                </header>
+                <div id="orientations-grid" class="identities-grid"></div>
+            </section>
+
+            <!-- Section 2: Gender Identities -->
+            <section class="identities-section" aria-label="Gender identities">
+                <header>
+                    <h2>Gender Identities</h2>
+                    <p class="section-desc">
+                        Gender identities as catalogued in Wikidata
+                        (<a href="https://www.wikidata.org/wiki/Q48264" target="_blank" rel="noopener">Q48264</a>),
+                        including culturally specific identities from around the world.
+                        Notable people are linked via property
+                        <a href="https://www.wikidata.org/wiki/Property:P21" target="_blank" rel="noopener">P21</a>.
+                    </p>
+                </header>
+                <div id="genders-grid" class="identities-grid"></div>
+            </section>
+
+            <!-- Section 3: Wikidata statistics -->
+            <section class="identities-section" aria-label="Wikidata coverage statistics">
+                <header>
+                    <h2>Wikidata Coverage</h2>
+                    <p class="section-desc">
+                        How many people on Wikidata are linked to each identity? These
+                        counts reflect the current state of structured data and are
+                        always growing as the community contributes.
+                    </p>
+                </header>
+                <div id="identity-counts"></div>
+            </section>
+
+            <!-- Data provenance note -->
+            <aside class="identities-data-note" aria-label="About this data">
+                <h2>About this data</h2>
+                <p>
+                    All data on this page is queried live from the
+                    <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
+                    using SPARQL. Identity categories reflect how Wikidata currently models
+                    sexual orientation (instances of
+                    <a href="https://www.wikidata.org/wiki/Q17888" target="_blank" rel="noopener">Q17888</a>)
+                    and gender identity (instances of
+                    <a href="https://www.wikidata.org/wiki/Q48264" target="_blank" rel="noopener">Q48264</a>).
+                </p>
+                <p>
+                    Wikidata coverage is incomplete and reflects systemic biases in
+                    available sources. Many identities, especially from non-Western
+                    cultures, are under-represented. You can help by
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">contributing to WikiProject LGBT</a>.
+                </p>
+            </aside>
+
         </main>
 
         <footer id="site-footer" role="contentinfo">
@@ -37,6 +115,8 @@
         </footer>
 
         <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/identities.js"></script>
     </body>
 
 </html>
