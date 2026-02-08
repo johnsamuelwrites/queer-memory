@@ -1,11 +1,15 @@
-<!DOCTYPE html>
 <html lang="en">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Queer Memory – {{page_title}}</title>
+        <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+        <title>Queer Memory - Places & Memory</title>
         <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme before first paint to prevent flash */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+        </script>
     </head>
 
     <body>
@@ -21,7 +25,7 @@
                     <li><a href="./rights.html">Rights</a></li>
                     <li><a href="./culture.html">Culture</a></li>
                     <li><a href="./identities.html">Identities</a></li>
-                    <li><a href="./places.html">Places</a></li>
+                    <li><a href="./places.html" aria-current="page">Places</a></li>
                     <li><a href="./activism.html">Activism</a></li>
                     <li><a href="./data.html">Data & Methodology</a></li>
                 </ul>
@@ -29,7 +33,83 @@
         </header>
 
         <main id="main-content" role="main">
-            {{page_content}}
+
+            <!-- Page header -->
+            <header class="page-header">
+                <h1>Places & Memory</h1>
+                <p class="page-intro">
+                    Discover LGBTQIA+ places that preserve memory and community: centers,
+                    museums, archives, galleries, and monuments. All data is drawn live
+                    from
+                    <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>.
+                </p>
+            </header>
+
+            <!-- Section 1: Centers & community spaces -->
+            <section class="places-section" aria-label="Community centers and info points">
+                <header>
+                    <h2>Community Centers & Info Points</h2>
+                    <p class="section-desc">
+                        LGBTQ+ community centers and information points that provide
+                        support services, organizing space, and local resources.
+                    </p>
+                </header>
+                <div id="places-centers-grid" class="places-centers-grid"></div>
+            </section>
+
+            <!-- Section 2: Museums & galleries -->
+            <section class="places-section" aria-label="Museums and galleries">
+                <header>
+                    <h2>Museums & Galleries</h2>
+                    <p class="section-desc">
+                        LGBTQ+ museums and dedicated galleries or exhibit spaces. This
+                        includes general LGBT places used when no more specific class
+                        exists in Wikidata.
+                    </p>
+                </header>
+                <div id="places-museums-grid" class="places-museums-grid"></div>
+            </section>
+
+            <!-- Section 3: Archives & libraries -->
+            <section class="places-section" aria-label="Archives and libraries">
+                <header>
+                    <h2>Archives & Libraries</h2>
+                    <p class="section-desc">
+                        Archives and libraries preserving LGBTQ+ history, publications,
+                        and collections.
+                    </p>
+                </header>
+                <div id="places-archives-grid" class="places-archives-grid"></div>
+            </section>
+
+            <!-- Section 4: Monuments & memorials -->
+            <section class="places-section" aria-label="Monuments and memorials">
+                <header>
+                    <h2>Monuments & Memorials</h2>
+                    <p class="section-desc">
+                        Historic places, monuments, and memorials that mark LGBTQ+
+                        history and remembrance.
+                    </p>
+                </header>
+                <div id="places-memorials-grid" class="places-memorials-grid"></div>
+            </section>
+
+            <!-- Data provenance note -->
+            <aside class="places-data-note" aria-label="About this data">
+                <h2>About this data</h2>
+                <p>
+                    All data on this page is queried live from the
+                    <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
+                    using SPARQL. Coverage reflects how well places are modelled in
+                    Wikidata.
+                </p>
+                <p>
+                    Records are uneven across regions and eras. You can help improve
+                    coverage by
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">contributing to WikiProject LGBT</a>.
+                </p>
+            </aside>
+
         </main>
 
         <footer id="site-footer" role="contentinfo">
@@ -37,6 +117,8 @@
         </footer>
 
         <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/places.js"></script>
     </body>
 
 </html>

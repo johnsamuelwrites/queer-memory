@@ -1,11 +1,15 @@
-<!DOCTYPE html>
 <html lang="en">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Queer Memory – {{page_title}}</title>
+        <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+        <title>Queer Memory - Culture & Media</title>
         <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme before first paint to prevent flash */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+        </script>
     </head>
 
     <body>
@@ -19,7 +23,7 @@
                     <li><a href="./cities.html">Cities</a></li>
                     <li><a href="./history.html">History</a></li>
                     <li><a href="./rights.html">Rights</a></li>
-                    <li><a href="./culture.html">Culture</a></li>
+                    <li><a href="./culture.html" aria-current="page">Culture</a></li>
                     <li><a href="./identities.html">Identities</a></li>
                     <li><a href="./places.html">Places</a></li>
                     <li><a href="./activism.html">Activism</a></li>
@@ -29,7 +33,81 @@
         </header>
 
         <main id="main-content" role="main">
-            {{page_content}}
+
+            <!-- Page header -->
+            <header class="page-header">
+                <h1>Culture & Media</h1>
+                <p class="page-intro">
+                    Explore LGBTQIA+ culture across film, television, literature,
+                    theatre, and community arts. All data is drawn live from
+                    <a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a>.
+                </p>
+            </header>
+
+            <!-- Section 1: Performing arts -->
+            <section class="culture-section" aria-label="Performing arts">
+                <header>
+                    <h2>Performing Arts</h2>
+                    <p class="section-desc">
+                        LGBTQ+ choruses and theatre works that shape public memory,
+                        performance, and community life.
+                    </p>
+                </header>
+                <div id="culture-performing-grid" class="culture-performing-grid"></div>
+            </section>
+
+            <!-- Section 2: Film & TV -->
+            <section class="culture-section" aria-label="Film and television">
+                <header>
+                    <h2>Film & Television</h2>
+                    <p class="section-desc">
+                        LGBTQ-related films and television series documented on
+                        Wikidata.
+                    </p>
+                </header>
+                <div id="culture-screen-grid" class="culture-screen-grid"></div>
+            </section>
+
+            <!-- Section 3: Literature & comics -->
+            <section class="culture-section" aria-label="Literature and comics">
+                <header>
+                    <h2>Literature & Comics</h2>
+                    <p class="section-desc">
+                        LGBTQ literature, literary works, and comics that capture
+                        queer stories and representation.
+                    </p>
+                </header>
+                <div id="culture-literature-grid" class="culture-literature-grid"></div>
+            </section>
+
+            <!-- Section 4: Media & festivals -->
+            <section class="culture-section" aria-label="Media and festivals">
+                <header>
+                    <h2>Media & Festivals</h2>
+                    <p class="section-desc">
+                        LGBTQ magazines and film festivals that document cultural
+                        production and community media.
+                    </p>
+                </header>
+                <div id="culture-media-grid" class="culture-media-grid"></div>
+            </section>
+
+            <!-- Data provenance note -->
+            <aside class="culture-data-note" aria-label="About this data">
+                <h2>About this data</h2>
+                <p>
+                    All data on this page is queried live from the
+                    <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
+                    using SPARQL. Coverage reflects how well cultural works are
+                    modelled in Wikidata.
+                </p>
+                <p>
+                    Records are uneven across regions and eras. You can help improve
+                    coverage by
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">contributing to WikiProject LGBT</a>.
+                </p>
+            </aside>
+
         </main>
 
         <footer id="site-footer" role="contentinfo">
@@ -37,6 +115,8 @@
         </footer>
 
         <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/culture.js"></script>
     </body>
 
 </html>
