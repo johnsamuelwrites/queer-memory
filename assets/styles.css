@@ -974,6 +974,19 @@ input, select, textarea {
     background: var(--bg-secondary);
 }
 
+/* Accessibility helpers */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 
 /* ============================================================
    Responsive
@@ -1359,6 +1372,545 @@ input, select, textarea {
 
 .identities-data-note p:last-child {
     margin-bottom: 0;
+}
+
+
+/* ============================================================
+   History & Timelines page
+   ============================================================ */
+
+/* Section spacing (reuses identities pattern) */
+.history-section {
+    margin-bottom: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.history-section:last-of-type {
+    border-bottom: none;
+}
+
+.history-section > header {
+    margin-bottom: var(--space-xl);
+}
+
+.history-section h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    position: relative;
+    padding-left: var(--space-lg);
+}
+
+.history-section h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 4px;
+    height: 1.2em;
+    border-radius: 2px;
+    background: var(--pride-gradient);
+}
+
+.history-eras-grid,
+.history-movements-grid,
+.history-people-grid,
+.history-hotspots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-lg);
+}
+
+/* History cards */
+.history-card__title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+    color: var(--accent-primary);
+}
+
+.history-card__meta {
+    display: inline-block;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.history-card__tag {
+    display: inline-block;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    padding: 2px var(--space-sm);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-sm);
+}
+
+.history-card__desc {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-md);
+}
+
+.history-card__count {
+    display: inline-block;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.history-card__links {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.history-person-card__image {
+    width: 100%;
+    height: 10rem;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-md);
+}
+
+.history-person-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+}
+
+.history-person-card:hover .history-person-card__image img {
+    transform: scale(1.05);
+}
+
+/* Data provenance aside */
+.history-data-note {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-default);
+    margin-top: var(--space-2xl);
+}
+
+.history-data-note h2 {
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.history-data-note p {
+    margin-bottom: var(--space-sm);
+    line-height: var(--leading-relaxed);
+}
+
+.history-data-note p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   Activism page
+   ============================================================ */
+
+/* Section spacing */
+.activism-section {
+    margin-bottom: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.activism-section:last-of-type {
+    border-bottom: none;
+}
+
+.activism-section > header {
+    margin-bottom: var(--space-xl);
+}
+
+.activism-section h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    position: relative;
+    padding-left: var(--space-lg);
+}
+
+.activism-section h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 4px;
+    height: 1.2em;
+    border-radius: 2px;
+    background: var(--pride-gradient);
+}
+
+.activism-movements-grid,
+.activism-protests-grid,
+.activism-pride-grid,
+.activism-people-grid,
+.activism-orgs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-lg);
+}
+
+/* Data provenance aside */
+.activism-data-note {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-default);
+    margin-top: var(--space-2xl);
+}
+
+.activism-data-note h2 {
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.activism-data-note p {
+    margin-bottom: var(--space-sm);
+    line-height: var(--leading-relaxed);
+}
+
+.activism-data-note p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   Places page
+   ============================================================ */
+
+/* Section spacing */
+.places-section {
+    margin-bottom: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.places-section:last-of-type {
+    border-bottom: none;
+}
+
+.places-section > header {
+    margin-bottom: var(--space-xl);
+}
+
+.places-section h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    position: relative;
+    padding-left: var(--space-lg);
+}
+
+.places-section h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 4px;
+    height: 1.2em;
+    border-radius: 2px;
+    background: var(--pride-gradient);
+}
+
+.places-centers-grid,
+.places-museums-grid,
+.places-archives-grid,
+.places-memorials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-lg);
+}
+
+/* Data provenance aside */
+.places-data-note {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-default);
+    margin-top: var(--space-2xl);
+}
+
+.places-data-note h2 {
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.places-data-note p {
+    margin-bottom: var(--space-sm);
+    line-height: var(--leading-relaxed);
+}
+
+.places-data-note p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   Culture page
+   ============================================================ */
+
+/* Section spacing */
+.culture-section {
+    margin-bottom: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.culture-section:last-of-type {
+    border-bottom: none;
+}
+
+.culture-section > header {
+    margin-bottom: var(--space-xl);
+}
+
+.culture-section h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    position: relative;
+    padding-left: var(--space-lg);
+}
+
+.culture-section h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 4px;
+    height: 1.2em;
+    border-radius: 2px;
+    background: var(--pride-gradient);
+}
+
+.culture-performing-grid,
+.culture-screen-grid,
+.culture-literature-grid,
+.culture-media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-lg);
+}
+
+/* Data provenance aside */
+.culture-data-note {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-default);
+    margin-top: var(--space-2xl);
+}
+
+.culture-data-note h2 {
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.culture-data-note p {
+    margin-bottom: var(--space-sm);
+    line-height: var(--leading-relaxed);
+}
+
+.culture-data-note p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   Country & City listing pages
+   ============================================================ */
+
+.locations-section {
+    margin-bottom: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.locations-section:last-of-type {
+    border-bottom: none;
+}
+
+.location-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.location-search {
+    min-width: min(24rem, 100%);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-default);
+    background: var(--bg-secondary);
+}
+
+.location-count {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--accent-primary);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+}
+
+.location-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: var(--space-md);
+}
+
+.location-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+.location-card__name {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.location-card__meta {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.location-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+}
+
+.location-tag {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    padding: 2px var(--space-sm);
+    border-radius: var(--radius-full);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.locations-data-note {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-default);
+    margin-top: var(--space-2xl);
+}
+
+.locations-data-note h2 {
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.locations-data-note p {
+    margin-bottom: var(--space-sm);
+    line-height: var(--leading-relaxed);
+}
+
+.locations-data-note p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ============================================================
+   Data & Methodology page
+   ============================================================ */
+
+.data-section {
+    margin-bottom: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.data-section:last-of-type {
+    border-bottom: none;
+}
+
+.data-section > header {
+    margin-bottom: var(--space-xl);
+}
+
+.data-section h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    position: relative;
+    padding-left: var(--space-lg);
+}
+
+.data-section h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 4px;
+    height: 1.2em;
+    border-radius: 2px;
+    background: var(--pride-gradient);
+}
+
+.data-list {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--text-secondary);
+    line-height: var(--leading-relaxed);
+}
+
+.data-list li {
+    margin-bottom: var(--space-sm);
+}
+
+.data-note {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-default);
+    margin-top: var(--space-2xl);
+}
+
+.data-note h2 {
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.data-note p {
+    margin-bottom: 0;
+    line-height: var(--leading-relaxed);
 }
 
 
