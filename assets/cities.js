@@ -101,7 +101,7 @@
             }
 
             var tags = wd.el('div', 'location-card__tags');
-            tags.appendChild(wd.el('span', 'location-tag', city.count + ' records'));
+            tags.appendChild(wd.el('span', 'location-tag', city.count + ' items (places/events)'));
             link.appendChild(tags);
 
             container.appendChild(link);

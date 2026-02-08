@@ -150,7 +150,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?article WHERE {',
+            'SELECT DISTINCT ?item ?itemLabel ?itemDescription ?article WHERE {',
             '  VALUES ?type { wd:Q130262508 wd:Q125143610 }',
             '  ?item wdt:P31 ?type .',
             '  OPTIONAL { ?item wdt:P17 ?c1 . }',

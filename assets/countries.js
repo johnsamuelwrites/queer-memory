@@ -66,27 +66,41 @@
 
     function fetchHistoryCountries() {
         var sparql = [
-            'SELECT ?country ?countryLabel (COUNT(DISTINCT ?item) AS ?historyCount) WHERE {',
+            'SELECT ?item ?country ?countryLabel WHERE {',
             '  VALUES ?type { wd:Q130262508 wd:Q125143610 }',
             '  ?item wdt:P31 ?type .',
             '  OPTIONAL { ?item wdt:P17 ?c1 . }',
             '  OPTIONAL { ?item wdt:P921 ?c2 . }',
             '  BIND(COALESCE(?c1, ?c2) AS ?country)',
+            '  FILTER(BOUND(?c1) || BOUND(?c2))',
             '  ?country wdt:P31 wd:Q6256 .',
             '  ' + wd.labelService('en'),
             '}',
-            'GROUP BY ?country ?countryLabel',
-            'ORDER BY ?countryLabel',
-            'LIMIT 400'
+            'LIMIT 2000'
         ].join('\n');
 
         return wd.query(sparql).then(function (bindings) {
-            return bindings.map(function (b) {
+            var byCountry = {};
+            var labelByCountry = {};
+
+            bindings.forEach(function (b) {
+                var countryQid = wd.qid(b, 'country');
+                var itemQid = wd.qid(b, 'item');
+                if (!countryQid || !itemQid) return;
+
+                if (!byCountry[countryQid]) {
+                    byCountry[countryQid] = {};
+                    labelByCountry[countryQid] = wd.val(b, 'countryLabel');
+                }
+                byCountry[countryQid][itemQid] = true;
+            });
+
+            return Object.keys(byCountry).map(function (qid) {
                 return {
-                    qid: wd.qid(b, 'country'),
-                    label: wd.val(b, 'countryLabel'),
+                    qid: qid,
+                    label: labelByCountry[qid] || qid,
                     rightsCount: 0,
-                    historyCount: parseInt(wd.val(b, 'historyCount'), 10) || 0
+                    historyCount: Object.keys(byCountry[qid]).length
                 };
             });
         });
@@ -133,10 +147,10 @@
 
             var tags = wd.el('div', 'location-card__tags');
             if (country.rightsCount > 0) {
-                tags.appendChild(wd.el('span', 'location-tag', 'Rights: ' + country.rightsCount));
+                tags.appendChild(wd.el('span', 'location-tag', 'Rights items: ' + country.rightsCount));
             }
             if (country.historyCount > 0) {
-                tags.appendChild(wd.el('span', 'location-tag', 'History: ' + country.historyCount));
+                tags.appendChild(wd.el('span', 'location-tag', 'History items: ' + country.historyCount));
             }
             link.appendChild(tags);
 

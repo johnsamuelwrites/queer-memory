@@ -2528,6 +2528,21 @@ input, select, textarea {
     border-radius: var(--radius-full);
 }
 
+.location-help {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+    max-width: 56rem;
+}
+
+.inline-code {
+    font-family: var(--font-mono);
+    font-size: 0.95em;
+    background: var(--bg-tertiary);
+    padding: 0 6px;
+    border-radius: var(--radius-full);
+}
+
 .location-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
