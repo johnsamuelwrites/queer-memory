@@ -677,11 +677,85 @@ body::before {
     margin-bottom: var(--space-3xl);
     padding-bottom: var(--space-3xl);
     border-bottom: 1px solid var(--border-subtle);
+    scroll-margin-top: calc(var(--header-h) + 5rem);
 }
 
 .country-page > section:last-of-type,
 .country-page > aside:last-of-type {
     border-bottom: none;
+}
+
+/* Section jump navigation */
+.section-jump {
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-sm));
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-xl) 0 var(--space-2xl);
+    background: linear-gradient(120deg, rgba(124, 58, 237, 0.12), rgba(8, 145, 178, 0.08));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    backdrop-filter: blur(10px);
+}
+
+.section-jump__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.section-jump__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-left: auto;
+}
+
+.section-jump__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0.45rem 0.9rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast),
+                box-shadow var(--transition-fast),
+                border-color var(--transition-fast);
+}
+
+.section-jump__link:hover,
+.section-jump__link:focus-visible {
+    text-decoration: none;
+    transform: translateY(-1px);
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+@media (max-width: 900px) {
+    .section-jump {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--space-md);
+    }
+
+    .section-jump__list {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: var(--space-xs);
+    }
 }
 
 .country-page section > header {

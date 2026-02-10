@@ -56,6 +56,7 @@
         loadEvents(qid);
         loadPride(qid);
         loadCulture(qid);
+        loadPeople(qid);
         loadDataNote(qid);
     }
 
@@ -302,6 +303,42 @@
                 doneLoading();
                 console.error('Failed to load culture:', err);
                 wd.showError(container, 'Could not load culture data.');
+            });
+    }
+
+    function loadPeople(qid) {
+        var container = document.getElementById('city-people-list');
+        if (!container) return;
+        var doneLoading = wd.showLoading(container);
+
+        var sparql = [
+            'SELECT ?item ?itemLabel ?itemDescription ?dob ?article WHERE {',
+            '  ?item wdt:P31 wd:Q5 ;',
+            '        wdt:P91 ?orient ;',
+            '        wdt:P19 ?birthplace .',
+            '  { ?item wdt:P19 wd:' + qid + ' }',
+            '  UNION',
+            '  { ?item wdt:P19/wdt:P131 wd:' + qid + ' }',
+            '  OPTIONAL { ?item wdt:P569 ?dob . }',
+            '  OPTIONAL {',
+            '    ?article schema:about ?item ;',
+            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '  }',
+            '  ' + wd.labelService('en'),
+            '}',
+            'ORDER BY ?itemLabel',
+            'LIMIT 200'
+        ].join('\n');
+
+        wd.query(sparql)
+            .then(function (bindings) {
+                doneLoading();
+                renderCards(container, bindings, 'item', 'dob');
+            })
+            .catch(function (err) {
+                doneLoading();
+                console.error('Failed to load people:', err);
+                wd.showError(container, 'Could not load people data.');
             });
     }
 
