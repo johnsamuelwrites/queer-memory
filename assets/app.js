@@ -1,6 +1,6 @@
 /* ============================================================
    Queer Memory — Application Script
-   Theme toggling & core UI interactions
+   Theme toggling, language switcher & core UI interactions
    ============================================================ */
 
 (function () {
@@ -26,9 +26,10 @@
         // Update toggle button aria-label
         var btn = document.querySelector('.theme-toggle');
         if (btn) {
-            btn.setAttribute('aria-label',
-                theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
-            );
+            var label = theme === 'dark'
+                ? (QM.i18n ? QM.i18n.t('theme.switchLight') : 'Switch to light theme')
+                : (QM.i18n ? QM.i18n.t('theme.switchDark') : 'Switch to dark theme');
+            btn.setAttribute('aria-label', label);
         }
     }
 
@@ -45,13 +46,44 @@
         var btn = document.createElement('button');
         btn.className = 'theme-toggle';
         btn.type = 'button';
-        btn.setAttribute('aria-label', 'Switch theme');
+        btn.setAttribute('aria-label', QM.i18n ? QM.i18n.t('theme.switch') : 'Switch theme');
         btn.innerHTML =
             '<span class="icon-sun" aria-hidden="true">\u2600\uFE0F</span>' +
             '<span class="icon-moon" aria-hidden="true">\uD83C\uDF19</span>';
 
         btn.addEventListener('click', toggleTheme);
         header.appendChild(btn);
+    }
+
+    /* ----------------------------------------------------------
+       Language switcher
+       ---------------------------------------------------------- */
+    function createLangSwitcher() {
+        var header = document.getElementById('site-header');
+        if (!header || !QM.i18n) return;
+
+        var currentLang = QM.i18n.getLang();
+        var supported = QM.i18n.SUPPORTED;
+
+        var wrapper = document.createElement('div');
+        wrapper.className = 'lang-switcher';
+        wrapper.setAttribute('role', 'group');
+        wrapper.setAttribute('aria-label', QM.i18n.t('lang.label'));
+
+        supported.forEach(function (lang) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'lang-btn';
+            btn.textContent = lang.toUpperCase();
+            btn.setAttribute('aria-pressed', lang === currentLang ? 'true' : 'false');
+            if (lang === currentLang) btn.classList.add('lang-btn--active');
+            btn.addEventListener('click', function () {
+                QM.i18n.setLang(lang);
+            });
+            wrapper.appendChild(btn);
+        });
+
+        header.appendChild(wrapper);
     }
 
     // Apply theme immediately (before paint)
@@ -65,9 +97,14 @@
     });
 
     // DOM ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', createToggleButton);
-    } else {
+    function initUI() {
         createToggleButton();
+        createLangSwitcher();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUI);
+    } else {
+        initUI();
     }
 })();

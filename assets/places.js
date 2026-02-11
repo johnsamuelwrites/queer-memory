@@ -8,6 +8,9 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     /* ----------------------------------------------------------
        Configuration - model QIDs (WikiProject LGBT)
@@ -117,7 +120,7 @@
             '  OPTIONAL { ?item wdt:P17 ?country . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }'
         ];
 
@@ -125,7 +128,7 @@
             sparql.push('  MINUS { ?item wdt:P31 wd:' + qid + ' . }');
         });
 
-        sparql.push('  ' + wd.labelService('en'));
+        sparql.push('  ' + wd.labelService());
         sparql.push('}');
         sparql.push('ORDER BY ?itemLabel');
         sparql.push('LIMIT ' + (limit || 200));
@@ -186,7 +189,7 @@
             link.href = articleUrl || wd.entityUrl(itemQid);
             link.target = '_blank';
             link.rel = 'noopener';
-            link.textContent = articleUrl ? 'Wikipedia' : 'Wikidata';
+            link.textContent = articleUrl ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia') : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
             link.className = 'identity-card__link';
             links.appendChild(link);
             card.appendChild(links);

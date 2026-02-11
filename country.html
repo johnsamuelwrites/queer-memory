@@ -7,8 +7,8 @@
         <title>Queer Memory - Country Profile</title>
         <link rel="stylesheet" href="./assets/styles.css">
         <script>
-            /* Apply saved/preferred theme before first paint to prevent flash */
-            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+            /* Apply saved/preferred theme & language before first paint */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('queer-memory-lang')||navigator.language.substring(0,2);if(['en','fr','es'].indexOf(l)<0)l='en';document.documentElement.lang=l})();
         </script>
     </head>
 
@@ -19,15 +19,17 @@
             </div>
             <nav id="site-nav" aria-label="Main navigation">
                 <ul>
-                    <li><a href="./countries.html">Countries</a></li>
-                    <li><a href="./cities.html">Cities</a></li>
-                    <li><a href="./history.html">History</a></li>
-                    <li><a href="./rights.html">Rights</a></li>
-                    <li><a href="./culture.html">Culture</a></li>
-                    <li><a href="./identities.html">Identities</a></li>
-                    <li><a href="./places.html">Places</a></li>
-                    <li><a href="./activism.html">Activism</a></li>
-                    <li><a href="./data.html">Data & Methodology</a></li>
+                    <li><a href="./countries.html" data-i18n="nav.countries">Countries</a></li>
+                    <li><a href="./cities.html" data-i18n="nav.cities">Cities</a></li>
+                    <li><a href="./history.html" data-i18n="nav.history">History</a></li>
+                    <li><a href="./rights.html" data-i18n="nav.rights">Rights</a></li>
+                    <li><a href="./culture.html" data-i18n="nav.culture">Culture</a></li>
+                    <li><a href="./identities.html" data-i18n="nav.identities">Identities</a></li>
+                    <li><a href="./places.html" data-i18n="nav.places">Places</a></li>
+                    <li><a href="./activism.html" data-i18n="nav.activism">Activism</a></li>
+                    <li><a href="./memorial.html" data-i18n="nav.memorial">Memorial</a></li>
+                    <li><a href="./timeline.html" data-i18n="nav.timeline">Timeline</a></li>
+                    <li><a href="./data.html" data-i18n="nav.data">Data &amp; Methodology</a></li>
                 </ul>
             </nav>
         </header>
@@ -55,67 +57,67 @@
                 </header>
 
                 <nav class="section-jump" aria-label="Jump to section">
-                    <span class="section-jump__label">Jump to</span>
+                    <span class="section-jump__label" data-i18n="country.jumpTo">Jump to</span>
                     <ul class="section-jump__list">
-                        <li><a class="section-jump__link" href="#country-overview">Overview</a></li>
-                        <li><a class="section-jump__link" href="#country-places">Places</a></li>
-                        <li><a class="section-jump__link" href="#country-activism">Activism</a></li>
-                        <li><a class="section-jump__link" href="#country-events">Events</a></li>
-                        <li><a class="section-jump__link" href="#country-pride">Pride</a></li>
-                        <li><a class="section-jump__link" href="#country-culture">Culture</a></li>
-                        <li><a class="section-jump__link" href="#country-data">Data</a></li>
+                        <li><a class="section-jump__link" href="#country-overview" data-i18n="country.overview">Overview</a></li>
+                        <li><a class="section-jump__link" href="#country-places" data-i18n="country.places">Places</a></li>
+                        <li><a class="section-jump__link" href="#country-activism" data-i18n="country.activism">Activism</a></li>
+                        <li><a class="section-jump__link" href="#country-events" data-i18n="country.events">Events</a></li>
+                        <li><a class="section-jump__link" href="#country-pride" data-i18n="country.pride">Pride</a></li>
+                        <li><a class="section-jump__link" href="#country-culture" data-i18n="country.culture">Culture</a></li>
+                        <li><a class="section-jump__link" href="#country-data" data-i18n="city.data">Data</a></li>
                     </ul>
                 </nav>
 
                 <section class="country-overview" aria-label="Overview" id="country-overview">
                     <div class="legal-status-summary">
-                        <h2>Rights & Law</h2>
+                        <h2 data-i18n="country.rights">Rights & Law</h2>
                         <div id="country-rights-list"></div>
                     </div>
                     <div class="key-milestones">
-                        <h2>History & Timelines</h2>
+                        <h2 data-i18n="country.history">History & Timelines</h2>
                         <div id="country-history-list"></div>
                     </div>
                 </section>
 
                 <section class="country-places" aria-label="Places and memory" id="country-places">
                     <header>
-                        <h2>Places & Memory</h2>
+                        <h2 data-i18n="country.places">Places & Memory</h2>
                     </header>
                     <div id="country-places-list"></div>
                 </section>
 
                 <section class="country-activism" aria-label="Activism and organizations" id="country-activism">
                     <header>
-                        <h2>Activism & Organizations</h2>
+                        <h2 data-i18n="country.activism">Activism & Organizations</h2>
                     </header>
                     <div id="country-orgs-list"></div>
                 </section>
 
                 <section class="country-history" aria-label="Events and protests" id="country-events">
                     <header>
-                        <h2>Events & Protests</h2>
+                        <h2 data-i18n="country.events">Events & Protests</h2>
                     </header>
                     <div id="country-events-list"></div>
                 </section>
 
                 <section class="country-history" aria-label="Pride and festivals" id="country-pride">
                     <header>
-                        <h2>Pride & Festivals</h2>
+                        <h2 data-i18n="country.pride">Pride & Festivals</h2>
                     </header>
                     <div id="country-pride-list"></div>
                 </section>
 
                 <section class="country-arts-media" aria-label="Culture and media" id="country-culture">
                     <header>
-                        <h2>Culture & Media</h2>
+                        <h2 data-i18n="country.culture">Culture & Media</h2>
                     </header>
                     <div id="country-culture-list"></div>
                 </section>
 
                 <aside class="country-data-notes" aria-label="Data sources and gaps" id="country-data">
-                    <h2>Data, sources, and gaps</h2>
-                    <div id="country-data-note">
+                    <h2 data-i18n="country.dataTitle">Data, sources, and gaps</h2>
+                    <div id="country-data-note" data-i18n="country.dataNote">
                         Data is queried live from the
                         <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
                         and reflects current coverage on
@@ -132,9 +134,10 @@
         </main>
 
         <footer id="site-footer" role="contentinfo">
-            <p>Built on Wikidata, Wikipedia, and Wikimedia Commons. Data is indicative and incomplete.</p>
+            <p data-i18n="footer.text">Built on Wikidata, Wikipedia, and Wikimedia Commons. Data is indicative and incomplete.</p>
         </footer>
 
+        <script src="./assets/i18n.js"></script>
         <script src="./assets/app.js"></script>
         <script src="./assets/wikidata.js"></script>
         <script src="./assets/country.js"></script>

@@ -7,8 +7,8 @@
         <title>Queer Memory - Data & Methodology</title>
         <link rel="stylesheet" href="./assets/styles.css">
         <script>
-            /* Apply saved/preferred theme before first paint to prevent flash */
-            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();
+            /* Apply saved/preferred theme & language before first paint */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('queer-memory-lang')||navigator.language.substring(0,2);if(['en','fr','es'].indexOf(l)<0)l='en';document.documentElement.lang=l})();
         </script>
     </head>
 
@@ -19,15 +19,17 @@
             </div>
             <nav id="site-nav" aria-label="Main navigation">
                 <ul>
-                    <li><a href="./countries.html">Countries</a></li>
-                    <li><a href="./cities.html">Cities</a></li>
-                    <li><a href="./history.html">History</a></li>
-                    <li><a href="./rights.html">Rights</a></li>
-                    <li><a href="./culture.html">Culture</a></li>
-                    <li><a href="./identities.html">Identities</a></li>
-                    <li><a href="./places.html">Places</a></li>
-                    <li><a href="./activism.html">Activism</a></li>
-                    <li><a href="./data.html" aria-current="page">Data & Methodology</a></li>
+                    <li><a href="./countries.html" data-i18n="nav.countries">Countries</a></li>
+                    <li><a href="./cities.html" data-i18n="nav.cities">Cities</a></li>
+                    <li><a href="./history.html" data-i18n="nav.history">History</a></li>
+                    <li><a href="./rights.html" data-i18n="nav.rights">Rights</a></li>
+                    <li><a href="./culture.html" data-i18n="nav.culture">Culture</a></li>
+                    <li><a href="./identities.html" data-i18n="nav.identities">Identities</a></li>
+                    <li><a href="./places.html" data-i18n="nav.places">Places</a></li>
+                    <li><a href="./activism.html" data-i18n="nav.activism">Activism</a></li>
+                    <li><a href="./memorial.html" data-i18n="nav.memorial">Memorial</a></li>
+                    <li><a href="./timeline.html" data-i18n="nav.timeline">Timeline</a></li>
+                    <li><a href="./data.html" aria-current="page" data-i18n="nav.data">Data &amp; Methodology</a></li>
                 </ul>
             </nav>
         </header>
@@ -36,8 +38,8 @@
 
             <!-- Page header -->
             <header class="page-header">
-                <h1>Data & Methodology</h1>
-                <p class="page-intro">
+                <h1 data-i18n="data.title" data-i18n-title="data.title">Data & Methodology</h1>
+                <p class="page-intro" data-i18n="data.intro">
                     Queer Memory is built from open knowledge projects. Every page
                     queries Wikidata live, and links to Wikipedia and Wikimedia
                     Commons when available.
@@ -46,49 +48,49 @@
 
             <section class="data-section" aria-label="Data sources">
                 <header>
-                    <h2>Data Sources</h2>
-                    <p class="section-desc">
+                    <h2 data-i18n="data.sources">Data Sources</h2>
+                    <p class="section-desc" data-i18n="data.sourcesDesc">
                         We draw structured data from Wikidata and surface related
                         articles and media from Wikipedia and Wikimedia Commons.
                     </p>
                 </header>
                 <ul class="data-list">
-                    <li><strong>Wikidata</strong> provides structured entities (people, events, places, rights, movements, works).</li>
-                    <li><strong>Wikipedia</strong> provides narrative context and detailed articles for many items.</li>
-                    <li><strong>Wikimedia Commons</strong> provides images and media for items with linked files.</li>
+                    <li data-i18n="data.srcWikidata"><strong>Wikidata</strong> provides structured entities (people, events, places, rights, movements, works).</li>
+                    <li data-i18n="data.srcWikipedia"><strong>Wikipedia</strong> provides narrative context and detailed articles for many items.</li>
+                    <li data-i18n="data.srcCommons"><strong>Wikimedia Commons</strong> provides images and media for items with linked files.</li>
                 </ul>
             </section>
 
             <section class="data-section" aria-label="Methodology">
                 <header>
-                    <h2>Methodology</h2>
-                    <p class="section-desc">
+                    <h2 data-i18n="data.methodology">Methodology</h2>
+                    <p class="section-desc" data-i18n="data.methodDesc">
                         The site runs SPARQL queries against the Wikidata Query
                         Service at page load. Results are rendered client-side and
                         update as Wikidata evolves.
                     </p>
                 </header>
                 <ul class="data-list">
-                    <li>All records are live and can change as community edits occur.</li>
-                    <li>We prioritize items aligned with the WikiProject LGBT data models.</li>
-                    <li>Where available, we link to English Wikipedia for context.</li>
+                    <li data-i18n="data.methodLive">All records are live and can change as community edits occur.</li>
+                    <li data-i18n="data.methodModels">We prioritize items aligned with the WikiProject LGBT data models.</li>
+                    <li data-i18n="data.methodLinks">Where available, we link to English Wikipedia for context.</li>
                 </ul>
             </section>
 
             <section class="data-section" aria-label="Data models">
                 <header>
-                    <h2>WikiProject LGBT Models</h2>
-                    <p class="section-desc">
+                    <h2 data-i18n="data.models">WikiProject LGBT Models</h2>
+                    <p class="section-desc" data-i18n="data.modelsDesc">
                         The project follows the WikiProject LGBT modeling guidance
                         for rights, identities, places, movements, and culture.
                     </p>
                 </header>
-                <p>
+                <p data-i18n="data.modelsP1">
                     These models define the classes and properties used for LGBTQIA+
                     topics, such as LGBT rights by country, LGBT pride in a geographic
                     region, and LGBT-related cultural works.
                 </p>
-                <p>
+                <p data-i18n="data.modelsP2">
                     If a topic is missing, improving the underlying model or
                     adding items in Wikidata will immediately improve this site.
                 </p>
@@ -96,8 +98,8 @@
 
             <section class="data-section" aria-label="Open-source code">
                 <header>
-                    <h2>Open-Source Code</h2>
-                    <p class="section-desc">
+                    <h2 data-i18n="data.openSource">Open-Source Code</h2>
+                    <p class="section-desc" data-i18n="data.openSourceDesc">
                         Queer Memory is a static front end, and its queries and page
                         loaders are maintained in the public repository. The code is
                         licensed under the GNU AGPL v3.
@@ -117,38 +119,38 @@
 
             <section class="data-section" aria-label="Coverage and limits">
                 <header>
-                    <h2>Coverage & Limitations</h2>
-                    <p class="section-desc">
+                    <h2 data-i18n="data.coverage">Coverage & Limitations</h2>
+                    <p class="section-desc" data-i18n="data.coverageDesc">
                         This project reflects what has been documented and modeled
                         in open knowledge sources, which are incomplete by nature.
                     </p>
                 </header>
                 <ul class="data-list">
-                    <li>Coverage is uneven across regions, languages, and historical periods.</li>
-                    <li>Under-documented communities and eras may be absent or thinly represented.</li>
-                    <li>Some items lack location, dates, or links, which affects visibility.</li>
+                    <li data-i18n="data.coverageUneven">Coverage is uneven across regions, languages, and historical periods.</li>
+                    <li data-i18n="data.coverageUnder">Under-documented communities and eras may be absent or thinly represented.</li>
+                    <li data-i18n="data.coverageMissing">Some items lack location, dates, or links, which affects visibility.</li>
                 </ul>
             </section>
 
             <section class="data-section" aria-label="Contribute">
                 <header>
-                    <h2>Help Improve Wikimedia Projects</h2>
-                    <p class="section-desc">
+                    <h2 data-i18n="data.contribute">Help Improve Wikimedia Projects</h2>
+                    <p class="section-desc" data-i18n="data.contributeDesc">
                         Queer Memory is only as strong as the open data behind it.
                         Contributions to Wikimedia projects directly improve this site.
                     </p>
                 </header>
                 <ul class="data-list">
-                    <li><strong>Add or improve Wikidata items</strong> for people, events, places, and organizations.</li>
-                    <li><strong>Expand Wikipedia articles</strong> for LGBTQIA+ histories and figures.</li>
-                    <li><strong>Upload media to Wikimedia Commons</strong> to enrich visual coverage.</li>
-                    <li><strong>Join WikiProject LGBT</strong> to help curate and model data.</li>
+                    <li data-i18n="data.contribWikidata"><strong>Add or improve Wikidata items</strong> for people, events, places, and organizations.</li>
+                    <li data-i18n="data.contribWikipedia"><strong>Expand Wikipedia articles</strong> for LGBTQIA+ histories and figures.</li>
+                    <li data-i18n="data.contribCommons"><strong>Upload media to Wikimedia Commons</strong> to enrich visual coverage.</li>
+                    <li data-i18n="data.contribJoin"><strong>Join WikiProject LGBT</strong> to help curate and model data.</li>
                 </ul>
             </section>
 
             <aside class="data-note" aria-label="Licensing and attribution">
-                <h2>Licensing & Attribution</h2>
-                <p>
+                <h2 data-i18n="data.licensing">Licensing & Attribution</h2>
+                <p data-i18n="data.licensingText">
                     Project code is licensed under the GNU AGPL v3. Wikidata content
                     is available under CC0. Wikipedia and Wikimedia Commons content
                     follow their respective open licenses. Links are provided for
@@ -159,9 +161,10 @@
         </main>
 
         <footer id="site-footer" role="contentinfo">
-            <p>Built on Wikidata, Wikipedia, and Wikimedia Commons. Data is indicative and incomplete.</p>
+            <p data-i18n="footer.text">Built on Wikidata, Wikipedia, and Wikimedia Commons. Data is indicative and incomplete.</p>
         </footer>
 
+        <script src="./assets/i18n.js"></script>
         <script src="./assets/app.js"></script>
     </body>
 

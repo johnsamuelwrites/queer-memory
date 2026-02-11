@@ -9,6 +9,9 @@
 
     var wd = QM.wikidata;
     var models = QM.models;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     /* ----------------------------------------------------------
        Configuration — rights topic QIDs from WikiProject LGBT
@@ -21,45 +24,45 @@
     var RIGHTS_TOPICS = [
         {
             qid:   'Q130262462',
-            label: 'Same-sex marriage',
+            label: i18n ? i18n.t('rights.marriage') : 'Same-sex marriage',
             icon:  '\uD83D\uDC8D',
-            desc:  'Countries and territories with legal same-sex marriage.'
+            desc:  i18n ? i18n.t('rights.marriageDesc') : 'Countries and territories with legal same-sex marriage.'
         },
         {
             qid:   'Q130265950',
-            label: 'Same-sex unions',
+            label: i18n ? i18n.t('rights.unions') : 'Same-sex unions',
             icon:  '\uD83E\uDD1D',
-            desc:  'Countries with civil unions, domestic partnerships, or other same-sex union recognition.'
+            desc:  i18n ? i18n.t('rights.unionsDesc') : 'Countries with civil unions, domestic partnerships, or other same-sex union recognition.'
         },
         {
             qid:   'Q130286663',
-            label: 'Decriminalization',
+            label: i18n ? i18n.t('rights.decrim') : 'Decriminalization',
             icon:  '\u2696\uFE0F',
-            desc:  'Countries that have decriminalized consensual same-sex relations.'
+            desc:  i18n ? i18n.t('rights.decrimDesc') : 'Countries that have decriminalized consensual same-sex relations.'
         },
         {
             qid:   'Q130286655',
-            label: 'Same-sex adoption',
+            label: i18n ? i18n.t('rights.adoption') : 'Same-sex adoption',
             icon:  '\uD83D\uDC76',
-            desc:  'Countries allowing adoption by same-sex couples.'
+            desc:  i18n ? i18n.t('rights.adoptionDesc') : 'Countries allowing adoption by same-sex couples.'
         },
         {
             qid:   'Q130320678',
-            label: 'Conversion therapy bans',
+            label: i18n ? i18n.t('rights.conversion') : 'Conversion therapy bans',
             icon:  '\uD83D\uDEAB',
-            desc:  'Countries or regions that have outlawed conversion therapy.'
+            desc:  i18n ? i18n.t('rights.conversionDesc') : 'Countries or regions that have outlawed conversion therapy.'
         },
         {
             qid:   'Q123237562',
-            label: 'Transgender rights',
+            label: i18n ? i18n.t('rights.trans') : 'Transgender rights',
             icon:  '\u26A7\uFE0F',
-            desc:  'Transgender rights by country, including legal gender recognition.'
+            desc:  i18n ? i18n.t('rights.transDesc') : 'Transgender rights by country, including legal gender recognition.'
         },
         {
             qid:   'Q130301689',
-            label: 'Intersex rights',
+            label: i18n ? i18n.t('rights.intersex') : 'Intersex rights',
             icon:  '\uD83D\uDFE3',
-            desc:  'Intersex rights by country, including protections against non-consensual medical interventions.'
+            desc:  i18n ? i18n.t('rights.intersexDesc') : 'Intersex rights by country, including protections against non-consensual medical interventions.'
         }
     ];
 
@@ -114,9 +117,9 @@
             '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?countryLabel',
             'LIMIT 300'
@@ -205,7 +208,7 @@
             'SELECT ?topic ?topicLabel (COUNT(DISTINCT ?item) AS ?count) WHERE {',
             '  ' + wd.valuesClause('?topic', topicQids),
             '  ?item wdt:P31 ?topic .',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'GROUP BY ?topic ?topicLabel',
             'ORDER BY DESC(?count)'
@@ -251,7 +254,7 @@
             var count = countMap[topic.qid] || 0;
             var countStr = count > 0
                 ? count + ' ' + (count === 1 ? 'region' : 'regions') + ' on Wikidata'
-                : 'No data yet';
+                : (i18n ? i18n.t('empty.noData') : 'No data yet');
             card.appendChild(wd.el('span', 'rights-topic-card__count', countStr));
 
             /* Links */
@@ -261,7 +264,7 @@
             wdLink.href = wd.entityUrl(topic.qid);
             wdLink.target = '_blank';
             wdLink.rel = 'noopener';
-            wdLink.textContent = 'Wikidata class';
+            wdLink.textContent = i18n ? i18n.t('link.wikidataClass') : 'Wikidata class';
             wdLink.className = 'identity-card__link';
             links.appendChild(wdLink);
 
@@ -270,7 +273,7 @@
                 var expandBtn = document.createElement('button');
                 expandBtn.type = 'button';
                 expandBtn.className = 'btn btn--secondary rights-topic-card__expand-btn';
-                expandBtn.textContent = 'Show regions';
+                expandBtn.textContent = i18n ? i18n.t('btn.showRegions') : 'Show regions';
                 expandBtn.setAttribute('data-qid', topic.qid);
                 expandBtn.setAttribute('aria-expanded', 'false');
                 expandBtn.addEventListener('click', onExpandTopic);
@@ -304,12 +307,12 @@
         if (expanded) {
             regionContainer.hidden = true;
             btn.setAttribute('aria-expanded', 'false');
-            btn.textContent = 'Show regions';
+            btn.textContent = i18n ? i18n.t('btn.showRegions') : 'Show regions';
             return;
         }
 
         btn.setAttribute('aria-expanded', 'true');
-        btn.textContent = 'Hide regions';
+        btn.textContent = i18n ? i18n.t('btn.hideRegions') : 'Hide regions';
         regionContainer.hidden = false;
 
         /* Only load once */
@@ -324,9 +327,9 @@
             '  OPTIONAL { ?item wdt:P17 ?country . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?countryLabel',
             'LIMIT 200'
@@ -408,7 +411,7 @@
             'SELECT ?topic ?topicLabel (COUNT(DISTINCT ?item) AS ?count) WHERE {',
             '  ' + wd.valuesClause('?topic', topicQids),
             '  ?item wdt:P31 ?topic .',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'GROUP BY ?topic ?topicLabel',
             'ORDER BY DESC(?count)'
@@ -442,7 +445,7 @@
             var count = countMap[topic.qid] || 0;
             var countStr = count > 0
                 ? count + ' ' + (count === 1 ? 'entry' : 'entries') + ' on Wikidata'
-                : 'No data yet';
+                : (i18n ? i18n.t('empty.noData') : 'No data yet');
             card.appendChild(wd.el('span', 'discrimination-card__count', countStr));
 
             /* Link to Wikidata class */
@@ -450,7 +453,7 @@
             link.href = wd.entityUrl(topic.qid);
             link.target = '_blank';
             link.rel = 'noopener';
-            link.textContent = 'View on Wikidata';
+            link.textContent = i18n ? i18n.t('link.viewOnWikidata') : 'View on Wikidata';
             link.className = 'identity-card__link';
             var linkWrap = wd.el('div', 'discrimination-card__links');
             linkWrap.appendChild(link);
@@ -460,7 +463,7 @@
                 var expandBtn = document.createElement('button');
                 expandBtn.type = 'button';
                 expandBtn.className = 'btn btn--secondary rights-topic-card__expand-btn';
-                expandBtn.textContent = 'Show entries';
+                expandBtn.textContent = i18n ? i18n.t('btn.showEntries') : 'Show entries';
                 expandBtn.setAttribute('data-qid', topic.qid);
                 expandBtn.setAttribute('aria-expanded', 'false');
                 expandBtn.addEventListener('click', onExpandTopic);

@@ -68,6 +68,13 @@ QM.models = (function () {
         P1546:  { id: 'P1546',  label: 'motto',                                domain: 'event' },
         P2825:  { id: 'P2825',  label: 'via',                                  domain: 'event' },
 
+        /* --- Death / cause properties --- */
+        P509:   { id: 'P509',   label: 'cause of death',                       domain: 'person' },
+        P1196:  { id: 'P1196',  label: 'manner of death',                      domain: 'person' },
+        P569:   { id: 'P569',   label: 'date of birth',                        domain: 'person' },
+        P570:   { id: 'P570',   label: 'date of death',                        domain: 'person' },
+        P297:   { id: 'P297',   label: 'ISO 3166-1 alpha-2 code',             domain: 'location' },
+
         /* --- Other classification --- */
         P887:   { id: 'P887',   label: 'based on heuristic',                   domain: 'metadata' },
         P2521:  { id: 'P2521',  label: 'female form of label',                 domain: 'metadata' },

@@ -8,6 +8,9 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     /* ----------------------------------------------------------
        Configuration - model QIDs (WikiProject LGBT)
@@ -55,7 +58,7 @@
             'SELECT ?topic ?topicLabel (COUNT(DISTINCT ?item) AS ?count) WHERE {',
             '  ' + wd.valuesClause('?topic', topicQids),
             '  ?item wdt:P31 ?topic .',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'GROUP BY ?topic ?topicLabel',
             'ORDER BY DESC(?count)'
@@ -85,7 +88,7 @@
             var count = countMap[topic.qid] || 0;
             var countStr = count > 0
                 ? count + ' ' + (count === 1 ? 'entry' : 'entries')
-                : 'No data yet';
+                : (i18n ? i18n.t('empty.noData') : 'No data yet');
 
             card.appendChild(wd.el('h3', 'history-card__title', topic.label));
             card.appendChild(wd.el('p', 'history-card__desc', topic.desc));
@@ -96,7 +99,7 @@
             link.href = wd.entityUrl(topic.qid);
             link.target = '_blank';
             link.rel = 'noopener';
-            link.textContent = 'Wikidata class';
+            link.textContent = i18n ? i18n.t('link.wikidataClass') : 'Wikidata class';
             link.className = 'identity-card__link';
             links.appendChild(link);
             card.appendChild(links);
@@ -124,9 +127,9 @@
             '  OPTIONAL { ?event wdt:P585 ?date . }',
             '  OPTIONAL {',
             '    ?article schema:about ?event ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY DESC(?date)',
             'LIMIT 24'
@@ -162,9 +165,9 @@
             '  OPTIONAL { ?event wdt:P585 ?date . }',
             '  OPTIONAL {',
             '    ?article schema:about ?event ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY DESC(?date)',
             'LIMIT 24'
@@ -203,9 +206,9 @@
             '  OPTIONAL { ?person wdt:P570 ?dod . }',
             '  OPTIONAL {',
             '    ?article schema:about ?person ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?personLabel',
             'LIMIT 24'
@@ -243,9 +246,9 @@
             '  OPTIONAL { ?item wdt:P17 ?country . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?itemLabel',
             'LIMIT 200'
@@ -270,7 +273,7 @@
 
     function renderEventCards(container, bindings, itemKey) {
         if (!bindings.length) {
-            container.appendChild(wd.el('p', 'qm-empty', 'No events found.'));
+            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('empty.noResults') : 'No events found.'));
             return;
         }
 
@@ -308,7 +311,7 @@
             link.href = articleUrl || wd.entityUrl(itemQid);
             link.target = '_blank';
             link.rel = 'noopener';
-            link.textContent = articleUrl ? 'Wikipedia' : 'Wikidata';
+            link.textContent = articleUrl ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia') : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
             link.className = 'identity-card__link';
             links.appendChild(link);
             card.appendChild(links);
@@ -319,7 +322,7 @@
 
     function renderPeopleCards(container, bindings) {
         if (!bindings.length) {
-            container.appendChild(wd.el('p', 'qm-empty', 'No people found.'));
+            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('empty.noPeople') : 'No people found.'));
             return;
         }
 
@@ -366,7 +369,7 @@
             link.href = articleUrl || wd.entityUrl(personQid);
             link.target = '_blank';
             link.rel = 'noopener';
-            link.textContent = articleUrl ? 'Wikipedia' : 'Wikidata';
+            link.textContent = articleUrl ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia') : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
             link.className = 'identity-card__link';
             links.appendChild(link);
             card.appendChild(links);
@@ -419,7 +422,7 @@
             link.href = articleUrl || wd.entityUrl(itemQid);
             link.target = '_blank';
             link.rel = 'noopener';
-            link.textContent = articleUrl ? 'Wikipedia' : 'Wikidata';
+            link.textContent = articleUrl ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia') : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
             link.className = 'identity-card__link';
             links.appendChild(link);
             card.appendChild(links);

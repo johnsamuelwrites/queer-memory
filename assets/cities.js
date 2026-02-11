@@ -8,6 +8,9 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     var PLACE_TYPES = [
         'Q2945640',   /* LGBT community center */
@@ -50,7 +53,7 @@
             '  ?item wdt:P131 ?city .',
             '  ?city wdt:P31/wdt:P279* wd:Q515 .',
             '  OPTIONAL { ?city wdt:P17 ?country . }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'GROUP BY ?city ?cityLabel ?country ?countryLabel',
             'ORDER BY DESC(?count) ?cityLabel',

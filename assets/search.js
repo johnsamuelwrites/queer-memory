@@ -8,6 +8,9 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     var form       = document.getElementById('search-form');
     var input      = document.getElementById('search-input');
@@ -110,7 +113,7 @@
             '    bd:serviceParam wikibase:endpoint "www.wikidata.org";',
             '                    wikibase:api "EntitySearch";',
             '                    mwapi:search "' + escaped + '";',
-            '                    mwapi:language "en".',
+            '                    mwapi:language "' + lang + '".',
             '    ?item wikibase:apiOutputItem mwapi:item.',
             '  }',
             '  ?item wdt:P31 wd:Q5 .',
@@ -118,7 +121,7 @@
             '  UNION',
             '  { ?item wdt:P21 ?gender . FILTER(?gender NOT IN (wd:Q6581097, wd:Q6581072)) }',
             '  OPTIONAL { ?item wdt:P18 ?image . }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'LIMIT 20'
         ].join('\n');
@@ -130,7 +133,7 @@
             '    bd:serviceParam wikibase:endpoint "www.wikidata.org";',
             '                    wikibase:api "EntitySearch";',
             '                    mwapi:search "' + escaped + '";',
-            '                    mwapi:language "en".',
+            '                    mwapi:language "' + lang + '".',
             '    ?item wikibase:apiOutputItem mwapi:item.',
             '  }',
             '  { ?item wdt:P31 wd:Q6256 . }',
@@ -139,7 +142,7 @@
             '  UNION',
             '  { ?item wdt:P31 wd:Q515 . }',
             '  OPTIONAL { ?item wdt:P18 ?image . }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'LIMIT 15'
         ].join('\n');
@@ -151,7 +154,7 @@
             '    bd:serviceParam wikibase:endpoint "www.wikidata.org";',
             '                    wikibase:api "EntitySearch";',
             '                    mwapi:search "' + escaped + '";',
-            '                    mwapi:language "en".',
+            '                    mwapi:language "' + lang + '".',
             '    ?item wikibase:apiOutputItem mwapi:item.',
             '  }',
             '  VALUES ?relatedType {',
@@ -162,7 +165,7 @@
             '  }',
             '  ?item wdt:P31 ?relatedType .',
             '  OPTIONAL { ?item wdt:P18 ?image . }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'LIMIT 15'
         ].join('\n');
@@ -191,7 +194,7 @@
             .catch(function (err) {
                 doneLoading();
                 if (err && err.name === 'AbortError') return;
-                wd.showError(resultsEl, 'Search failed. Please try again.');
+                wd.showError(resultsEl, i18n ? i18n.t('search.failed') : 'Search failed. Please try again.');
             });
     }
 
@@ -243,9 +246,9 @@
        Category labels and link-building
        -------------------------------------------------------- */
     var categoryLabels = {
-        country: 'Country / City',
-        person:  'Person',
-        lgbt:    'LGBT Topic'
+        country: i18n ? i18n.t('search.catCountry') : 'Country / City',
+        person:  i18n ? i18n.t('search.catPerson') : 'Person',
+        lgbt:    i18n ? i18n.t('search.catLgbt') : 'LGBT Topic'
     };
 
     function buildLink(b) {
@@ -270,16 +273,15 @@
        -------------------------------------------------------- */
     function renderResults(items, term) {
         if (!items.length) {
-            statusEl.textContent = 'No results found for \u201c' + term + '\u201d';
+            statusEl.textContent = (i18n ? i18n.t('search.noResults') : 'No results found for') + ' \u201c' + term + '\u201d';
             resultsEl.appendChild(
                 wd.el('p', 'qm-empty',
-                    'Try a different search term, or browse using the navigation above.')
+                    i18n ? i18n.t('search.tryAgain') : 'Try a different search term, or browse using the navigation above.')
             );
             return;
         }
 
-        statusEl.textContent = items.length + ' result' + (items.length === 1 ? '' : 's') +
-                               ' for \u201c' + term + '\u201d';
+        statusEl.textContent = items.length + ' ' + (items.length === 1 ? (i18n ? i18n.t('search.results') : 'result') : (i18n ? i18n.t('search.resultsPlural') : 'results')) + ' ' + (i18n ? i18n.t('search.for') : 'for') + ' \u201c' + term + '\u201d';
 
         var grid = wd.el('div', 'search-results-grid');
 

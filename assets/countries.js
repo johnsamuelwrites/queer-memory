@@ -8,6 +8,9 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     function init() {
         loadCountries();
@@ -45,7 +48,7 @@
             '  BIND(COALESCE(?countryDirect, ?rights) AS ?place)',
             '  ?place wdt:P31 wd:Q6256 .',
             '  BIND(?place AS ?country)',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'GROUP BY ?country ?countryLabel',
             'ORDER BY ?countryLabel',
@@ -74,7 +77,7 @@
             '  BIND(COALESCE(?c1, ?c2) AS ?country)',
             '  FILTER(BOUND(?c1) || BOUND(?c2))',
             '  ?country wdt:P31 wd:Q6256 .',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'LIMIT 2000'
         ].join('\n');

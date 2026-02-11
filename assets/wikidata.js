@@ -104,7 +104,7 @@ QM.wikidata = (function () {
      * Build a SERVICE wikibase:label clause.
      */
     function labelService(lang) {
-        lang = lang || 'en';
+        lang = lang || (QM.i18n ? QM.i18n.getLang() : 'en');
         return 'SERVICE wikibase:label { bd:serviceParam wikibase:language "' + lang + ',mul" . }';
     }
 
@@ -135,7 +135,7 @@ QM.wikidata = (function () {
      */
     function fetchInstancesOf(classQid, opts) {
         opts = opts || {};
-        var lang = opts.lang || 'en';
+        var lang = opts.lang || (QM.i18n ? QM.i18n.getLang() : 'en');
         var sparql = [
             'SELECT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
             '  ?item wdt:P31 wd:' + classQid + ' .',
@@ -161,7 +161,7 @@ QM.wikidata = (function () {
      */
     function fetchItems(qids, opts) {
         opts = opts || {};
-        var lang = opts.lang || 'en';
+        var lang = opts.lang || (QM.i18n ? QM.i18n.getLang() : 'en');
         var sparql = [
             'SELECT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
             '  ' + valuesClause('?item', qids),
@@ -188,7 +188,7 @@ QM.wikidata = (function () {
      */
     function fetchPeopleBy(property, valueQid, opts) {
         opts = opts || {};
-        var lang = opts.lang || 'en';
+        var lang = opts.lang || (QM.i18n ? QM.i18n.getLang() : 'en');
         var limit = opts.limit || 20;
         var sparql = [
             'SELECT ?person ?personLabel ?personDescription ?image ?article ?dob ?dod WHERE {',
@@ -219,7 +219,7 @@ QM.wikidata = (function () {
      */
     function fetchPeopleCounts(property, valueQids, opts) {
         opts = opts || {};
-        var lang = opts.lang || 'en';
+        var lang = opts.lang || (QM.i18n ? QM.i18n.getLang() : 'en');
         var sparql = [
             'SELECT ?identity ?identityLabel (COUNT(DISTINCT ?person) AS ?count) WHERE {',
             '  ' + valuesClause('?identity', valueQids),
@@ -255,8 +255,9 @@ QM.wikidata = (function () {
     function showLoading(container) {
         var spinner = el('div', 'qm-loading');
         spinner.setAttribute('role', 'status');
+        var loadingText = QM.i18n ? QM.i18n.t('loading') : 'Loading from Wikidata\u2026';
         spinner.innerHTML = '<span class="qm-spinner" aria-hidden="true"></span>' +
-                            '<span>Loading from Wikidata&hellip;</span>';
+                            '<span>' + loadingText + '</span>';
         container.appendChild(spinner);
         return function () {
             if (spinner.parentNode) spinner.parentNode.removeChild(spinner);
@@ -268,7 +269,7 @@ QM.wikidata = (function () {
      */
     function showError(container, message) {
         var box = el('div', 'qm-error');
-        box.textContent = message || 'Failed to load data from Wikidata.';
+        box.textContent = message || (QM.i18n ? QM.i18n.t('error.load') : 'Failed to load data from Wikidata.');
         container.appendChild(box);
     }
 

@@ -8,6 +8,9 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     /* ----------------------------------------------------------
        Configuration — curated identity QIDs
@@ -141,7 +144,7 @@
             wdLink.href = wd.entityUrl(identity.qid);
             wdLink.target = '_blank';
             wdLink.rel = 'noopener';
-            wdLink.textContent = 'Wikidata';
+            wdLink.textContent = i18n ? i18n.t('link.wikidata') : 'Wikidata';
             wdLink.className = 'identity-card__link';
             links.appendChild(wdLink);
 
@@ -151,7 +154,7 @@
                 wpLink.href = articleUrl;
                 wpLink.target = '_blank';
                 wpLink.rel = 'noopener';
-                wpLink.textContent = 'Wikipedia';
+                wpLink.textContent = i18n ? i18n.t('link.wikipedia') : 'Wikipedia';
                 wpLink.className = 'identity-card__link';
                 links.appendChild(wpLink);
             }
@@ -160,7 +163,7 @@
             var peopleBtn = document.createElement('button');
             peopleBtn.type = 'button';
             peopleBtn.className = 'btn btn--secondary identity-card__people-btn';
-            peopleBtn.textContent = 'Notable people';
+            peopleBtn.textContent = i18n ? i18n.t('btn.notablePeople') : 'Notable people';
             peopleBtn.setAttribute('data-qid', identity.qid);
             peopleBtn.setAttribute('data-property', property);
             peopleBtn.setAttribute('aria-expanded', 'false');
@@ -223,7 +226,7 @@
 
     function renderPeopleList(container, bindings) {
         if (!bindings.length) {
-            container.appendChild(wd.el('p', 'qm-empty', 'No people found in Wikidata for this identity.'));
+            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('empty.noPeople') : 'No people found in Wikidata for this identity.'));
             return;
         }
 

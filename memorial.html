@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+        <title>Queer Memory – Memorial</title>
+        <link rel="stylesheet" href="./assets/styles.css">
+        <script>
+            /* Apply saved/preferred theme & language before first paint */
+            (function(){var t=localStorage.getItem('queer-memory-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);var l=new URLSearchParams(location.search).get('lang')||localStorage.getItem('queer-memory-lang')||navigator.language.substring(0,2);if(['en','fr','es'].indexOf(l)<0)l='en';document.documentElement.lang=l})();
+        </script>
+    </head>
+
+    <body class="memorial-page">
+        <header id="site-header" role="banner">
+            <div class="logo">
+                <a href="./index.html">Queer Memory</a>
+            </div>
+            <nav id="site-nav" aria-label="Main navigation">
+                <ul>
+                    <li><a href="./countries.html" data-i18n="nav.countries">Countries</a></li>
+                    <li><a href="./cities.html" data-i18n="nav.cities">Cities</a></li>
+                    <li><a href="./history.html" data-i18n="nav.history">History</a></li>
+                    <li><a href="./rights.html" data-i18n="nav.rights">Rights</a></li>
+                    <li><a href="./culture.html" data-i18n="nav.culture">Culture</a></li>
+                    <li><a href="./identities.html" data-i18n="nav.identities">Identities</a></li>
+                    <li><a href="./places.html" data-i18n="nav.places">Places</a></li>
+                    <li><a href="./activism.html" data-i18n="nav.activism">Activism</a></li>
+                    <li><a href="./memorial.html" aria-current="page" data-i18n="nav.memorial">Memorial</a></li>
+                    <li><a href="./timeline.html" data-i18n="nav.timeline">Timeline</a></li>
+                    <li><a href="./data.html" data-i18n="nav.data">Data &amp; Methodology</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Content warning -->
+        <div id="memorial-warning" class="memorial-warning" role="alertdialog" aria-labelledby="warning-title" aria-describedby="warning-text">
+            <div class="memorial-warning__inner">
+                <h2 id="warning-title" data-i18n="memorial.warningTitle">Content note</h2>
+                <p id="warning-text" data-i18n="memorial.warningText">
+                    This page contains references to death, violence, and persecution.
+                    Please take care.
+                </p>
+                <button id="warning-dismiss" type="button" class="btn memorial-warning__btn" data-i18n="memorial.warningBtn">I understand</button>
+            </div>
+        </div>
+
+        <main id="main-content" role="main">
+
+            <!-- Page header -->
+            <header class="page-header memorial-header">
+                <h1 data-i18n="memorial.title" data-i18n-title="memorial.title">Memorial</h1>
+                <p class="memorial-intro" data-i18n="memorial.intro">
+                    Remembering LGBTQ+ lives lost to the AIDS crisis, hate violence,
+                    and persecution. This page honours their memory through open data.
+                </p>
+            </header>
+
+            <!-- Section 1: AIDS Crisis -->
+            <section class="memorial-section" aria-label="Lost to the AIDS crisis">
+                <header>
+                    <h2 data-i18n="memorial.aids">Lost to the AIDS Crisis</h2>
+                    <p class="section-desc" data-i18n="memorial.aidsDesc">
+                        People documented on Wikidata who died of AIDS-related illness.
+                    </p>
+                </header>
+                <div id="memorial-aids"></div>
+            </section>
+
+            <!-- Section 2: Victims of Violence -->
+            <section class="memorial-section" aria-label="Victims of violence">
+                <header>
+                    <h2 data-i18n="memorial.violence">Victims of Violence</h2>
+                    <p class="section-desc" data-i18n="memorial.violenceDesc">
+                        LGBTQ+ people documented on Wikidata who were victims of homicide.
+                    </p>
+                </header>
+                <div id="memorial-violence"></div>
+            </section>
+
+            <!-- Section 3: Persecution by region -->
+            <section class="memorial-section" aria-label="Persecution by region">
+                <header>
+                    <h2 data-i18n="memorial.persecution">Persecution by Region</h2>
+                    <p class="section-desc" data-i18n="memorial.persecutionDesc">
+                        Documented instances of violence against LGBTQ+ people by
+                        geographic region.
+                    </p>
+                </header>
+                <div id="memorial-persecution"></div>
+            </section>
+
+            <!-- Data provenance note -->
+            <aside class="memorial-data-note" aria-label="About this data">
+                <h2 data-i18n="aboutData.title">About this data</h2>
+                <p data-i18n="memorial.dataP1">
+                    All data on this page is queried live from the
+                    <a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a>
+                    using SPARQL. Coverage is deeply incomplete: many lives are not yet
+                    documented in structured data.
+                </p>
+                <p data-i18n="memorial.dataP2">
+                    These records reflect only what the Wikidata community has been able
+                    to verify and source. You can help honour more lives by contributing to
+                    <a href="https://www.wikidata.org/wiki/Wikidata:WikiProject_LGBT" target="_blank" rel="noopener">WikiProject LGBT</a>.
+                </p>
+            </aside>
+
+        </main>
+
+        <footer id="site-footer" role="contentinfo">
+            <p data-i18n="footer.text">Built on Wikidata, Wikipedia, and Wikimedia Commons. Data is indicative and incomplete.</p>
+        </footer>
+
+        <script src="./assets/i18n.js"></script>
+        <script src="./assets/app.js"></script>
+        <script src="./assets/wikidata.js"></script>
+        <script src="./assets/memorial.js"></script>
+    </body>
+
+</html>

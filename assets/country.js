@@ -8,6 +8,9 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     var PLACE_TYPES = [
         'Q2945640',
@@ -84,9 +87,9 @@
             '  OPTIONAL { ?item wdt:P1082 ?population . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}'
         ].join('\n');
 
@@ -124,9 +127,9 @@
             '  ?item wdt:P17 wd:' + qid + ' .',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?itemLabel',
             'LIMIT 100'
@@ -159,9 +162,9 @@
             '  FILTER(?country = wd:' + qid + ')',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?itemLabel',
             'LIMIT 100'
@@ -191,9 +194,9 @@
             '  ?item wdt:P17 wd:' + qid + ' .',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?itemLabel',
             'LIMIT 200'
@@ -225,9 +228,9 @@
             '  OPTIONAL { ?item wdt:P131 ?loc . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?itemLabel',
             'LIMIT 200'
@@ -258,9 +261,9 @@
             '  OPTIONAL { ?item wdt:P585 ?date . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY DESC(?date)',
             'LIMIT 200'
@@ -290,9 +293,9 @@
             '  OPTIONAL { ?item wdt:P585 ?date . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY DESC(?date)',
             'LIMIT 200'
@@ -328,9 +331,9 @@
             '  BIND(COALESCE(?pubDate, ?startDate) AS ?date)',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY DESC(?date)',
             'LIMIT 200'
@@ -398,7 +401,7 @@
                 wp.href = articleUrl;
                 wp.target = '_blank';
                 wp.rel = 'noopener';
-                wp.textContent = 'Wikipedia';
+                wp.textContent = i18n ? i18n.t('link.wikipedia') : 'Wikipedia';
                 wp.className = 'identity-card__link';
                 links.appendChild(wp);
             }
@@ -407,7 +410,7 @@
             wdLink.href = wd.entityUrl(qid);
             wdLink.target = '_blank';
             wdLink.rel = 'noopener';
-            wdLink.textContent = 'Wikidata';
+            wdLink.textContent = i18n ? i18n.t('link.wikidata') : 'Wikidata';
             wdLink.className = 'identity-card__link';
             links.appendChild(wdLink);
 
@@ -427,7 +430,7 @@
             wp.href = articleUrl;
             wp.target = '_blank';
             wp.rel = 'noopener';
-            wp.textContent = 'Wikipedia';
+            wp.textContent = i18n ? i18n.t('link.wikipedia') : 'Wikipedia';
             wp.className = 'identity-card__link';
             container.appendChild(wp);
         }
@@ -436,7 +439,7 @@
         wdLink.href = wd.entityUrl(qid);
         wdLink.target = '_blank';
         wdLink.rel = 'noopener';
-        wdLink.textContent = 'Wikidata';
+        wdLink.textContent = i18n ? i18n.t('link.wikidata') : 'Wikidata';
         wdLink.className = 'identity-card__link';
         container.appendChild(wdLink);
     }

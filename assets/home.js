@@ -8,12 +8,16 @@
     'use strict';
 
     var wd = QM.wikidata;
+    var i18n = QM.i18n;
+    var lang = i18n ? i18n.getLang() : 'en';
+    var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
 
     /* ----------------------------------------------------------
        Bootstrap
        ---------------------------------------------------------- */
     function init() {
         loadLiveStats();
+        loadOnThisDay();
         loadFeaturedTimeline();
         loadDiscoverPeople();
         loadRecentPrideEvents();
@@ -32,37 +36,37 @@
         var stats = [
             {
                 id: 'stat-countries',
-                label: 'Countries & Territories',
+                label: i18n ? i18n.t('home.stat.countries') : 'Countries & Territories',
                 icon: '\uD83C\uDF0D',
                 sparql: 'SELECT (COUNT(DISTINCT ?item) AS ?count) WHERE { ?item wdt:P31 wd:Q17898 . }'
             },
             {
                 id: 'stat-people',
-                label: 'Notable People',
+                label: i18n ? i18n.t('home.stat.people') : 'Notable People',
                 icon: '\uD83D\uDC65',
                 sparql: 'SELECT (COUNT(DISTINCT ?p) AS ?count) WHERE { ?p wdt:P31 wd:Q5 ; wdt:P91 ?o . }'
             },
             {
                 id: 'stat-pride',
-                label: 'Pride Events',
+                label: i18n ? i18n.t('home.stat.pride') : 'Pride Events',
                 icon: '\uD83C\uDFF3\uFE0F\u200D\uD83C\uDF08',
                 sparql: 'SELECT (COUNT(DISTINCT ?item) AS ?count) WHERE { ?item wdt:P31 wd:Q51404 . }'
             },
             {
                 id: 'stat-orgs',
-                label: 'Organizations',
+                label: i18n ? i18n.t('home.stat.orgs') : 'Organizations',
                 icon: '\uD83C\uDFE2',
                 sparql: 'SELECT (COUNT(DISTINCT ?item) AS ?count) WHERE { VALUES ?type { wd:Q64606659 wd:Q6458277 } ?item wdt:P31 ?type . }'
             },
             {
                 id: 'stat-places',
-                label: 'Places & Venues',
+                label: i18n ? i18n.t('home.stat.places') : 'Places & Venues',
                 icon: '\uD83D\uDCCD',
                 sparql: 'SELECT (COUNT(DISTINCT ?item) AS ?count) WHERE { VALUES ?type { wd:Q2945640 wd:Q61710650 wd:Q105321449 wd:Q1043639 wd:Q29469577 wd:Q62128088 wd:Q61710689 } ?item wdt:P31 ?type . }'
             },
             {
                 id: 'stat-films',
-                label: 'Films & TV Shows',
+                label: i18n ? i18n.t('home.stat.films') : 'Films & TV Shows',
                 icon: '\uD83C\uDFAC',
                 sparql: 'SELECT (COUNT(DISTINCT ?item) AS ?count) WHERE { VALUES ?type { wd:Q20442589 wd:Q85133165 } ?item wdt:P136 ?type . }'
             }
@@ -119,6 +123,136 @@
     }
 
     /* ----------------------------------------------------------
+       Section: On This Day
+       People born or who died on today's date.
+       ---------------------------------------------------------- */
+    function loadOnThisDay() {
+        var container = document.getElementById('on-this-day');
+        if (!container) return;
+
+        var doneLoading = wd.showLoading(container);
+        var now = new Date();
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+
+        var sparql = [
+            'SELECT ?person ?personLabel ?personDescription ?dob ?dod ?image ?article WHERE {',
+            '  ?person wdt:P31 wd:Q5 ;',
+            '          wdt:P91 ?orient .',
+            '  { ?person wdt:P569 ?dob . FILTER(MONTH(?dob) = ' + month + ' && DAY(?dob) = ' + day + ') }',
+            '  UNION',
+            '  { ?person wdt:P570 ?dod . FILTER(MONTH(?dod) = ' + month + ' && DAY(?dod) = ' + day + ') }',
+            '  OPTIONAL { ?person wdt:P569 ?dob . }',
+            '  OPTIONAL { ?person wdt:P570 ?dod . }',
+            '  OPTIONAL { ?person wdt:P18 ?image . }',
+            '  OPTIONAL {',
+            '    ?article schema:about ?person ;',
+            '            schema:isPartOf <' + wikiUrl + '> .',
+            '  }',
+            '  ' + wd.labelService(),
+            '}',
+            'LIMIT 30'
+        ].join('\n');
+
+        wd.query(sparql)
+            .then(function (bindings) {
+                doneLoading();
+                renderOnThisDay(container, bindings, month, day);
+            })
+            .catch(function () {
+                doneLoading();
+                wd.showError(container, i18n ? i18n.t('home.errorOnThisDay') : 'Could not load On This Day data.');
+            });
+    }
+
+    function renderOnThisDay(container, bindings, month, day) {
+        /* Deduplicate */
+        var seen = {};
+        var people = [];
+        bindings.forEach(function (b) {
+            var id = wd.qid(b, 'person');
+            if (!seen[id]) { seen[id] = true; people.push(b); }
+        });
+
+        if (!people.length) {
+            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('home.noOnThisDay') : 'No events found for today.'));
+            return;
+        }
+
+        /* Classify: born today vs died today */
+        var bornToday = [];
+        var diedToday = [];
+        people.forEach(function (b) {
+            var dob = wd.val(b, 'dob');
+            var dod = wd.val(b, 'dod');
+            var dobMatch = dob && matchesDate(dob, month, day);
+            var dodMatch = dod && matchesDate(dod, month, day);
+            if (dobMatch) bornToday.push(b);
+            if (dodMatch) diedToday.push(b);
+        });
+
+        var list = wd.el('div', 'otd-list');
+
+        /* Born today */
+        bornToday.slice(0, 8).forEach(function (b) {
+            list.appendChild(renderOtdCard(b, 'born'));
+        });
+
+        /* Died today */
+        diedToday.slice(0, 8).forEach(function (b) {
+            list.appendChild(renderOtdCard(b, 'died'));
+        });
+
+        container.appendChild(list);
+    }
+
+    function renderOtdCard(b, type) {
+        var card = wd.el('a', 'otd-card');
+        var articleUrl = wd.val(b, 'article');
+        card.href = articleUrl || wd.entityUrl(wd.qid(b, 'person'));
+        card.target = '_blank';
+        card.rel = 'noopener';
+
+        var imgUrl = wd.val(b, 'image');
+        if (imgUrl) {
+            var img = document.createElement('img');
+            img.src = wd.thumb(imgUrl, 120);
+            img.alt = '';
+            img.loading = 'lazy';
+            img.className = 'otd-card__photo';
+            card.appendChild(img);
+        } else {
+            card.appendChild(wd.el('div', 'otd-card__photo otd-card__photo--empty'));
+        }
+
+        var info = wd.el('div', 'otd-card__info');
+        info.appendChild(wd.el('span', 'otd-card__name', wd.val(b, 'personLabel')));
+
+        var dob = wd.val(b, 'dob');
+        var dod = wd.val(b, 'dod');
+        var dateStr = formatYear(dob);
+        if (dod) dateStr += '\u2013' + formatYear(dod);
+        if (dateStr) info.appendChild(wd.el('span', 'otd-card__dates', dateStr));
+
+        var badgeLabel = type === 'born'
+            ? (i18n ? i18n.t('home.born') : 'Born')
+            : (i18n ? i18n.t('home.died') : 'Died');
+        var badge = wd.el('span', 'otd-card__badge otd-card__badge--' + type, badgeLabel);
+        info.appendChild(badge);
+
+        var desc = wd.val(b, 'personDescription');
+        if (desc) info.appendChild(wd.el('span', 'otd-card__desc', desc));
+
+        card.appendChild(info);
+        return card;
+    }
+
+    function matchesDate(isoDate, month, day) {
+        var d = new Date(isoDate);
+        return (d.getMonth() + 1) === month && d.getDate() === day;
+    }
+
+    /* ----------------------------------------------------------
        Section: Featured — This month in queer history
        Fetch notable people born/died in the current month.
        ---------------------------------------------------------- */
@@ -140,9 +274,9 @@
             '  OPTIONAL { ?person wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?person ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY ?dob',
             'LIMIT 30'
@@ -155,7 +289,7 @@
             })
             .catch(function () {
                 doneLoading();
-                wd.showError(container, 'Could not load featured timeline.');
+                wd.showError(container, i18n ? i18n.t('home.errorTimeline') : 'Could not load featured timeline.');
             });
     }
 
@@ -169,7 +303,7 @@
         });
 
         if (!people.length) {
-            container.appendChild(wd.el('p', 'qm-empty', 'No featured people found for this month.'));
+            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('home.noFeatured') : 'No featured people found for this month.'));
             return;
         }
 
@@ -177,11 +311,10 @@
         var withImg = people.filter(function (b) { return wd.val(b, 'image'); });
         var show = withImg.length >= 6 ? withImg.slice(0, 6) : people.slice(0, 6);
 
-        var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'];
+        var monthName = i18n ? i18n.t('month.' + now.getMonth()) : ['January','February','March','April','May','June','July','August','September','October','November','December'][now.getMonth()];
 
         var heading = wd.el('p', 'featured-month-label',
-            'Born in ' + monthNames[now.getMonth()]);
+            (i18n ? i18n.t('home.bornIn') : 'Born in') + ' ' + monthName);
         container.appendChild(heading);
 
         var grid = wd.el('div', 'featured-people-grid');
@@ -239,9 +372,9 @@
             '          wdt:P18 ?image .',
             '  OPTIONAL {',
             '    ?article schema:about ?person ;',
-            '            schema:isPartOf <https://en.wikipedia.org/> .',
+            '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY MD5(CONCAT(STR(?person), "' + dayHash + '"))',
             'LIMIT 12'
@@ -254,13 +387,13 @@
             })
             .catch(function () {
                 doneLoading();
-                wd.showError(container, 'Could not load discoveries.');
+                wd.showError(container, i18n ? i18n.t('home.errorDiscover') : 'Could not load discoveries.');
             });
     }
 
     function renderDiscoverStrip(container, bindings) {
         if (!bindings.length) {
-            container.appendChild(wd.el('p', 'qm-empty', 'No discoveries available.'));
+            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('home.noDiscoveries') : 'No discoveries available.'));
             return;
         }
 
@@ -327,7 +460,7 @@
             '  OPTIONAL { ?event wdt:P18 ?image . }',
             '  OPTIONAL { ?event wdt:P1132 ?participants . }',
             '  FILTER(YEAR(?date) >= 2020)',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY DESC(?date)',
             'LIMIT 10'
@@ -340,13 +473,13 @@
             })
             .catch(function () {
                 doneLoading();
-                wd.showError(container, 'Could not load pride events.');
+                wd.showError(container, i18n ? i18n.t('home.errorPride') : 'Could not load pride events.');
             });
     }
 
     function renderPrideEvents(container, bindings) {
         if (!bindings.length) {
-            container.appendChild(wd.el('p', 'qm-empty', 'No recent pride events found.'));
+            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('home.noPrideEvents') : 'No recent pride events found.'));
             return;
         }
 
@@ -390,7 +523,7 @@
             var participants = wd.val(b, 'participants');
             if (participants) {
                 card.appendChild(wd.el('span', 'pride-event-card__participants',
-                    parseInt(participants, 10).toLocaleString() + ' participants'));
+                    parseInt(participants, 10).toLocaleString() + ' ' + (i18n ? i18n.t('home.participants') : 'participants')));
             }
 
             grid.appendChild(card);
@@ -412,7 +545,7 @@
             'SELECT ?flag ?flagLabel ?image WHERE {',
             '  ?flag wdt:P279* wd:Q7242811 .',
             '  ?flag wdt:P18 ?image .',
-            '  ' + wd.labelService('en'),
+            '  ' + wd.labelService(),
             '}',
             'ORDER BY (?flagLabel)',
             'LIMIT 30'
@@ -425,7 +558,7 @@
             })
             .catch(function () {
                 doneLoading();
-                wd.showError(container, 'Could not load pride flags.');
+                wd.showError(container, i18n ? i18n.t('home.errorFlags') : 'Could not load pride flags.');
             });
     }
 
