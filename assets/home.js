@@ -362,21 +362,28 @@
 
         var doneLoading = wd.showLoading(container);
 
-        /* Fetch a set of notable people with images, using a hash-based pseudo-random
-           sort that changes daily so the strip feels fresh */
-        var dayHash = Math.floor(Date.now() / 86400000);
+        /* Fetch a randomized slice using modulo bucketing to avoid expensive full scans/sorts. */
         var sparql = [
+            'PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>',
             'SELECT ?person ?personLabel ?personDescription ?image ?article WHERE {',
+            '  {',
+            '    SELECT (FLOOR((RAND()) * 251 ) AS ?k) WHERE { }',
+            '    LIMIT 1',
+            '  }',
             '  ?person wdt:P31 wd:Q5 ;',
-            '          wdt:P91 ?orient ;',
-            '          wdt:P18 ?image .',
+            '          wdt:P18 ?image ;',
+            '          wdt:P91 ?orient .',
+            '  FILTER(?orient != wd:Q1035954)',
+            '  BIND(xsd:integer(REPLACE(STR(?person), "^.*/Q", "")) AS ?qidNum)',
+            '  BIND(?qidNum - ((FLOOR(?qidNum / 251 )) * 251 ) AS ?rem)',
+            '  FILTER(?rem = ?k)',
             '  OPTIONAL {',
             '    ?article schema:about ?person ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
             '  }',
             '  ' + wd.labelService(),
             '}',
-            'ORDER BY MD5(CONCAT(STR(?person), "' + dayHash + '"))',
+            'ORDER BY (MD5(CONCAT(STR(?person), STR(?k))))',
             'LIMIT 12'
         ].join('\n');
 
