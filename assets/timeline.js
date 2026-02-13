@@ -13,6 +13,7 @@
     var i18n = QM.i18n;
     var lang = i18n ? i18n.getLang() : 'en';
     var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
+    var scope = readScopeFromUrl();
 
     /* ----------------------------------------------------------
        Categories
@@ -36,6 +37,7 @@
     function init() {
         var container = document.getElementById('timeline-container');
         if (!container) return;
+        applyScopeHeader();
 
         var doneLoading = wd.showLoading(container);
 
@@ -65,18 +67,67 @@
         });
     }
 
+    function readScopeFromUrl() {
+        var params = new URLSearchParams(window.location.search);
+        var country = (params.get('country') || '').trim();
+        var city = (params.get('city') || '').trim();
+        var label = (params.get('label') || '').trim();
+        if (isQid(country)) {
+            return { type: 'country', qid: country, label: label };
+        }
+        if (isQid(city)) {
+            return { type: 'city', qid: city, label: label };
+        }
+        return null;
+    }
+
+    function isQid(id) {
+        return /^Q[1-9]\d*$/.test(id || '');
+    }
+
+    function applyScopeHeader() {
+        if (!scope) return;
+        var title = document.querySelector('.page-header h1');
+        var intro = document.querySelector('.page-header .page-intro');
+        var label = scope.label || scope.qid;
+        var scopeName = scope.type === 'city' ? 'City' : 'Country';
+        if (title) {
+            title.textContent = (i18n ? i18n.t('timeline.title') : 'Interactive Timeline') +
+                ' - ' + label;
+        }
+        if (intro) {
+            intro.textContent = scopeName + '-level view for ' + label +
+                '. This page is filtered to timeline records connected to this place.';
+        }
+    }
+
+    function scopeClause(countryPatterns, cityPatterns) {
+        if (!scope) return '';
+        var patterns = scope.type === 'country' ? (countryPatterns || []) : (cityPatterns || []);
+        if (!patterns.length) return '';
+        var wrapped = patterns.map(function (p) {
+            return '  { ' + p + ' }';
+        });
+        return wrapped.join('\n  UNION\n');
+    }
+
     /* ----------------------------------------------------------
        SPARQL Queries
        ---------------------------------------------------------- */
 
     /* 1. Legal milestones — rights classes with dates */
     function queryRights() {
+        var locationClause = scope ? scopeClause(
+            ['?item wdt:P17 wd:' + scope.qid, '?item wdt:P921 wd:' + scope.qid],
+            ['?item wdt:P131 wd:' + scope.qid, '?item wdt:P131/wdt:P131 wd:' + scope.qid, '?item wdt:P276 wd:' + scope.qid, '?item wdt:P276/wdt:P131 wd:' + scope.qid, '?item wdt:P921 wd:' + scope.qid]
+        ) : '';
         var sparql = [
             'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
             '  VALUES ?type { wd:Q130262462 wd:Q130265950 wd:Q130286663',
             '                 wd:Q130286655 wd:Q130320678 wd:Q123237562 wd:Q130301689 }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P585 ?date . } UNION { ?item wdt:P571 ?date . }',
+            locationClause,
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -96,11 +147,16 @@
 
     /* 2. Pride events with dates — use direct P31 match, avoid expensive P279* */
     function queryActivism() {
+        var locationClause = scope ? scopeClause(
+            ['?item wdt:P17 wd:' + scope.qid, '?item wdt:P131/wdt:P17 wd:' + scope.qid, '?item wdt:P276/wdt:P17 wd:' + scope.qid],
+            ['?item wdt:P131 wd:' + scope.qid, '?item wdt:P276 wd:' + scope.qid, '?item wdt:P131/wdt:P131 wd:' + scope.qid, '?item wdt:P276/wdt:P131 wd:' + scope.qid]
+        ) : '';
         var sparql = [
             'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
             '  VALUES ?type { wd:Q51404 wd:Q125506609 }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P585 ?date . } UNION { ?item wdt:P571 ?date . }',
+            locationClause,
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -120,11 +176,16 @@
 
     /* 3. LGBTQ+ cultural works — use P31 only, with publication date P577 */
     function queryCulture() {
+        var locationClause = scope ? scopeClause(
+            ['?item wdt:P17 wd:' + scope.qid, '?item wdt:P495 wd:' + scope.qid, '?item wdt:P921 wd:' + scope.qid],
+            ['?item wdt:P131 wd:' + scope.qid, '?item wdt:P276 wd:' + scope.qid, '?item wdt:P131/wdt:P131 wd:' + scope.qid, '?item wdt:P276/wdt:P131 wd:' + scope.qid, '?item wdt:P921 wd:' + scope.qid]
+        ) : '';
         var sparql = [
             'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
             '  VALUES ?type { wd:Q20442589 wd:Q85133165 wd:Q10318944 wd:Q62018250 }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P577 ?date . } UNION { ?item wdt:P571 ?date . }',
+            locationClause,
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -144,12 +205,17 @@
 
     /* 4. Notable LGBTQ+ people — activists with birth dates */
     function queryPeople() {
+        var locationClause = scope ? scopeClause(
+            ['?item wdt:P19/wdt:P17 wd:' + scope.qid, '?item wdt:P27 wd:' + scope.qid],
+            ['?item wdt:P19 wd:' + scope.qid, '?item wdt:P19/wdt:P131 wd:' + scope.qid]
+        ) : '';
         var sparql = [
             'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
             '  ?item wdt:P31 wd:Q5 ;',
             '        wdt:P106 wd:Q19509201 ;',
             '        wdt:P569 ?date .',
             '  FILTER(YEAR(?date) >= 1850)',
+            locationClause,
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',

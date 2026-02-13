@@ -53,6 +53,8 @@
             return;
         }
 
+        updateTimelineMenuLink(qid);
+        renderLinks('city-links', '', qid);
         loadCityHeader(qid);
         loadPlaces(qid);
         loadOrganizations(qid);
@@ -95,7 +97,10 @@
         wd.query(sparql)
             .then(function (bindings) {
                 var b = bindings[0];
-                if (!b) return;
+                if (!b) {
+                    renderLinks('city-links', '', qid);
+                    return;
+                }
 
                 setText('city-name', wd.val(b, 'itemLabel'));
                 setText('city-breadcrumb', wd.val(b, 'itemLabel'));
@@ -108,10 +113,12 @@
                 var popText = popVal ? formatNumber(popVal) + ' population' : 'Population unknown';
                 setText('city-population', popText);
 
+                updateTimelineMenuLink(qid);
                 renderLinks('city-links', wd.val(b, 'article'), qid);
             })
             .catch(function (err) {
                 console.error('Failed to load city header:', err);
+                renderLinks('city-links', '', qid);
             });
     }
 
@@ -436,6 +443,26 @@
         wdLink.textContent = i18n ? i18n.t('link.wikidata') : 'Wikidata';
         wdLink.className = 'identity-card__link';
         container.appendChild(wdLink);
+
+        var name = (document.getElementById('city-name') || {}).textContent || qid;
+        var currentLang = i18n ? i18n.getLang() : '';
+        var timelineLink = document.createElement('a');
+        timelineLink.href = './timeline.html?city=' + encodeURIComponent(qid) +
+            '&label=' + encodeURIComponent(name) +
+            (currentLang ? '&lang=' + encodeURIComponent(currentLang) : '');
+        timelineLink.textContent = i18n ? i18n.t('nav.timeline') : 'Timeline';
+        timelineLink.className = 'identity-card__link';
+        container.appendChild(timelineLink);
+    }
+
+    function updateTimelineMenuLink(qid) {
+        var anchor = document.querySelector('.section-jump .section-jump__list a.section-jump__link[data-i18n="nav.timeline"]');
+        if (!anchor) return;
+        var currentLang = i18n ? i18n.getLang() : '';
+        var name = (document.getElementById('city-name') || {}).textContent || qid;
+        anchor.href = './timeline.html?city=' + encodeURIComponent(qid) +
+            '&label=' + encodeURIComponent(name) +
+            (currentLang ? '&lang=' + encodeURIComponent(currentLang) : '');
     }
 
     function setText(id, text) {
