@@ -3,6 +3,7 @@
 Queer Memory explores global LGBTQIA+ history through places, timelines, laws, culture, and activism. The site is a static front end that queries Wikidata live and links to Wikipedia and Wikimedia Commons where available.
 
 GitHub source: https://github.com/johnsamuelwrites/queer-memory
+Live application: https://queer-memory.toolforge.org/
 
 ## Features
 - Country and city discovery pages that link to detailed profiles.
