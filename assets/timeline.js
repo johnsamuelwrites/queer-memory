@@ -90,14 +90,20 @@
         var title = document.querySelector('.page-header h1');
         var intro = document.querySelector('.page-header .page-intro');
         var label = scope.label || scope.qid;
-        var scopeName = scope.type === 'city' ? 'City' : 'Country';
+        var isCity = scope.type === 'city';
+        var scopeName = isCity ? 'City' : 'Country';
         if (title) {
             title.textContent = (i18n ? i18n.t('timeline.title') : 'Interactive Timeline') +
                 ' - ' + label;
         }
         if (intro) {
-            intro.textContent = scopeName + '-level view for ' + label +
-                '. This page is filtered to timeline records connected to this place.';
+            var scopeViewText = i18n
+                ? i18n.t(isCity ? 'timeline.scopeCityView' : 'timeline.scopeCountryView', { label: label })
+                : (scopeName + '-level view for ' + label);
+            var scopeFilteredText = i18n
+                ? i18n.t('timeline.scopeFiltered')
+                : 'This page is filtered to timeline records connected to this place.';
+            intro.textContent = scopeViewText + '. ' + scopeFilteredText;
         }
     }
 

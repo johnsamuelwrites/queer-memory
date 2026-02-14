@@ -305,6 +305,9 @@ QM.i18n = (function () {
         'timeline.collapseAll': { en: 'Collapse all',            fr: 'Tout réduire',              es: 'Contraer todo' },
         'timeline.event':       { en: 'event',                   fr: 'événement',                 es: 'evento' },
         'timeline.events':      { en: 'events',                  fr: 'événements',                es: 'eventos' },
+        'timeline.scopeCityView': { en: 'City-level view for {label}', fr: 'Vue au niveau de la ville pour {label}', es: 'Vista a nivel de ciudad para {label}' },
+        'timeline.scopeCountryView': { en: 'Country-level view for {label}', fr: 'Vue au niveau du pays pour {label}', es: 'Vista a nivel de pais para {label}' },
+        'timeline.scopeFiltered': { en: 'This page is filtered to timeline records connected to this place.', fr: 'Cette page est filtree pour les elements de chronologie lies a ce lieu.', es: 'Esta pagina esta filtrada a registros de cronologia conectados con este lugar.' },
         'timeline.noEvents':    { en: 'No events found.',        fr: 'Aucun événement trouvé.',   es: 'No se encontraron eventos.' },
         'timeline.error':       { en: 'Could not load timeline data.', fr: 'Impossible de charger la chronologie.', es: 'No se pudieron cargar los datos de la cronología.' },
 
