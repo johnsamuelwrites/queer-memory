@@ -4369,6 +4369,21 @@ textarea {
     border-color: currentColor;
 }
 
+.heatmap-table__article-badge {
+    display: inline-block;
+    margin-left: 0.35rem;
+    padding: 1px 6px;
+    border-radius: var(--radius-full);
+    font-size: 0.62rem;
+    line-height: 1.25;
+    letter-spacing: 0.05em;
+    font-weight: 800;
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--accent-warm) 28%, var(--bg-tertiary));
+    border: 1px solid color-mix(in srgb, var(--accent-warm) 55%, transparent);
+    vertical-align: middle;
+}
+
 .heatmap-table__empty {
     text-align: center;
     color: var(--text-muted);

@@ -28,6 +28,10 @@
     var rows = [];           /* normalized rows for table */
     var sortState = { key: 'score', dir: 'desc' };
     var searchTerm = '';
+    var ARTICLE_BADGES = {
+        Q17437796: { short: 'FA', title: 'Featured article' },
+        Q17437798: { short: 'GA', title: 'Good article' }
+    };
 
     function init() {
         var container = document.getElementById('heatmap-map');
@@ -57,13 +61,14 @@
 
     function queryTopic(topic) {
         var sparql = [
-            'SELECT DISTINCT ?country ?countryLabel ?code ?item ?article WHERE {',
+            'SELECT DISTINCT ?country ?countryLabel ?code ?item ?article ?articleBadge WHERE {',
             '  ?item wdt:P31 wd:' + topic.qid + ' .',
             '  ?item wdt:P17 ?country .',
             '  ?country wdt:P297 ?code .',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
+            '    OPTIONAL { ?article wikibase:badge ?articleBadge . }',
             '  }',
             '  ' + wd.labelService(),
             '}',
@@ -88,8 +93,14 @@
                         var itemQid = wd.qid(b, 'item');
                         map[code] = {
                             article: articleUrl || '',
-                            itemUrl: wd.entityUrl(itemQid)
+                            itemUrl: wd.entityUrl(itemQid),
+                            badges: {}
                         };
+                    }
+
+                    var badgeQid = wd.qid(b, 'articleBadge');
+                    if (badgeQid && ARTICLE_BADGES[badgeQid]) {
+                        map[code].badges[badgeQid] = true;
                     }
                 });
                 topicResults[topic.key] = map;
@@ -296,6 +307,17 @@
                             ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia')
                             : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
                         td.appendChild(link);
+
+                        if (isWikipedia) {
+                            Object.keys(entry.badges || {}).forEach(function (badgeId) {
+                                var badgeMeta = ARTICLE_BADGES[badgeId];
+                                if (!badgeMeta) return;
+                                var badge = wd.el('span', 'heatmap-table__article-badge', badgeMeta.short);
+                                badge.title = badgeMeta.title;
+                                badge.setAttribute('aria-label', badgeMeta.title);
+                                td.appendChild(badge);
+                            });
+                        }
                     } else {
                         td.className += ' heatmap-table__status--no';
                         td.textContent = '—';
