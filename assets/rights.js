@@ -170,6 +170,7 @@
             card.target = '_blank';
             card.rel = 'noopener';
             card.setAttribute('data-qid', itemQid);
+            card.classList.add(articleUrl ? 'rights-country-card--wikipedia' : 'rights-country-card--wikidata');
 
             /* Country name */
             var countryLabel = wd.val(b, 'countryLabel');
@@ -381,6 +382,7 @@
             link.target = '_blank';
             link.rel = 'noopener';
             link.className = 'region-list__link';
+            link.classList.add(articleUrl ? 'region-list__link--wikipedia' : 'region-list__link--wikidata');
             link.textContent = displayName;
             li.appendChild(link);
 

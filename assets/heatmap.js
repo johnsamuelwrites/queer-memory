@@ -285,11 +285,14 @@
                     if (entry) {
                         var link = document.createElement('a');
                         var href = entry.article || entry.itemUrl;
+                        var isWikipedia = href.indexOf('wikipedia.org') >= 0;
                         link.href = href;
                         link.target = '_blank';
                         link.rel = 'noopener';
-                        link.className = 'heatmap-table__status-link';
-                        link.textContent = href.indexOf('wikipedia.org') >= 0
+                        link.className = 'heatmap-table__status-link ' + (isWikipedia
+                            ? 'heatmap-table__status-link--wikipedia'
+                            : 'heatmap-table__status-link--wikidata');
+                        link.textContent = isWikipedia
                             ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia')
                             : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
                         td.appendChild(link);

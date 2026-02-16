@@ -2326,10 +2326,32 @@ textarea {
     transition: background-color var(--transition-fast);
 }
 
+.identity-card__link[href*="wikipedia.org"] {
+    color: var(--accent-success);
+    background: color-mix(in srgb, var(--accent-success) 14%, var(--bg-tertiary));
+}
+
+.identity-card__link[href*="wikidata.org"] {
+    color: var(--accent-tertiary);
+    background: color-mix(in srgb, var(--accent-tertiary) 14%, var(--bg-tertiary));
+}
+
 .identity-card__link:hover {
     background: var(--accent-primary);
     color: var(--text-inverse);
     text-decoration: none;
+}
+
+.identity-card__link[href*="wikipedia.org"]:hover,
+.identity-card__link[href*="wikipedia.org"]:focus-visible {
+    background: var(--accent-success);
+    color: var(--text-inverse);
+}
+
+.identity-card__link[href*="wikidata.org"]:hover,
+.identity-card__link[href*="wikidata.org"]:focus-visible {
+    background: var(--accent-tertiary);
+    color: var(--text-inverse);
 }
 
 .identity-card__people-btn {
@@ -2386,6 +2408,14 @@ textarea {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.people-list__name[href*="wikipedia.org"] {
+    color: var(--accent-success);
+}
+
+.people-list__name[href*="wikidata.org"] {
+    color: var(--accent-tertiary);
 }
 
 .people-list__dates {
@@ -3207,6 +3237,14 @@ textarea {
     font-weight: 600;
 }
 
+.region-list__link--wikipedia {
+    color: var(--accent-success);
+}
+
+.region-list__link--wikidata {
+    color: var(--accent-tertiary);
+}
+
 .region-list__desc {
     color: var(--text-muted);
     font-size: var(--text-xs);
@@ -3245,6 +3283,14 @@ textarea {
         transform var(--transition-fast);
 }
 
+.rights-country-card--wikipedia {
+    border-left: 3px solid color-mix(in srgb, var(--accent-success) 70%, transparent);
+}
+
+.rights-country-card--wikidata {
+    border-left: 3px solid color-mix(in srgb, var(--accent-tertiary) 70%, transparent);
+}
+
 .rights-country-card:hover {
     border-color: var(--accent-primary);
     box-shadow: var(--shadow-sm);
@@ -3260,6 +3306,14 @@ textarea {
 
 .rights-country-card:hover .rights-country-card__name {
     color: var(--accent-primary);
+}
+
+.rights-country-card--wikipedia .rights-country-card__name {
+    color: var(--accent-success);
+}
+
+.rights-country-card--wikidata .rights-country-card__name {
+    color: var(--accent-tertiary);
 }
 
 .rights-country-card__desc {
@@ -4298,14 +4352,20 @@ textarea {
 }
 
 .heatmap-table__status-link {
-    color: var(--accent-success);
     text-decoration: none;
     border-bottom: 1px dashed transparent;
     transition: color 0.15s ease, border-color 0.15s ease;
 }
 
+.heatmap-table__status-link--wikipedia {
+    color: var(--accent-success);
+}
+
+.heatmap-table__status-link--wikidata {
+    color: var(--accent-tertiary);
+}
+
 .heatmap-table__status-link:hover {
-    color: var(--accent-primary);
     border-color: currentColor;
 }
 
