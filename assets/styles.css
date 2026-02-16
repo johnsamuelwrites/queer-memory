@@ -2858,6 +2858,22 @@ textarea {
     border-radius: var(--radius-full);
 }
 
+.location-count--updating {
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--accent-primary) 16%, var(--bg-tertiary));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-primary) 35%, transparent);
+    animation: location-count-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes location-count-pulse {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-1px);
+    }
+}
+
 .location-help {
     font-size: var(--text-sm);
     color: var(--text-secondary);
