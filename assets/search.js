@@ -117,7 +117,7 @@
             '    ?item wikibase:apiOutputItem mwapi:item.',
             '  }',
             '  ?item wdt:P31 wd:Q5 .',
-            '  { ?item wdt:P91 [] . }',
+            '  { ?item wdt:P91 ?orient . FILTER(?orient != wd:Q1035954) }',
             '  UNION',
             '  { ?item wdt:P21 ?gender . FILTER(?gender NOT IN (wd:Q6581097, wd:Q6581072)) }',
             '  OPTIONAL { ?item wdt:P18 ?image . }',

@@ -326,6 +326,7 @@
             '  ?item wdt:P31 wd:Q5 ;',
             '        wdt:P91 ?orient ;',
             '        wdt:P19 ?birthplace .',
+            '  FILTER(?orient != wd:Q1035954)',
             '  { ?item wdt:P19 wd:' + qid + ' }',
             '  UNION',
             '  { ?item wdt:P19/wdt:P131 wd:' + qid + ' }',

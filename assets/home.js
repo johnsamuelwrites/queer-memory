@@ -45,7 +45,7 @@
                 id: 'stat-people',
                 label: i18n ? i18n.t('home.stat.people') : 'Notable People',
                 icon: '\uD83D\uDC65',
-                sparql: 'SELECT (COUNT(DISTINCT ?p) AS ?count) WHERE { ?p wdt:P31 wd:Q5 ; wdt:P91 ?o . }'
+                sparql: 'SELECT (COUNT(DISTINCT ?p) AS ?count) WHERE { ?p wdt:P31 wd:Q5 ; wdt:P91 ?o . FILTER(?o != wd:Q1035954) }'
             },
             {
                 id: 'stat-pride',
@@ -140,6 +140,7 @@
             'SELECT ?person ?personLabel ?personDescription ?dob ?dod ?image ?article WHERE {',
             '  ?person wdt:P31 wd:Q5 ;',
             '          wdt:P91 ?orient .',
+            '  FILTER(?orient != wd:Q1035954)',
             '  { ?person wdt:P569 ?dob . FILTER(MONTH(?dob) = ' + month + ' && DAY(?dob) = ' + day + ') }',
             '  UNION',
             '  { ?person wdt:P570 ?dod . FILTER(MONTH(?dod) = ' + month + ' && DAY(?dod) = ' + day + ') }',
@@ -270,6 +271,7 @@
             '  ?person wdt:P31 wd:Q5 ;',
             '          wdt:P91 ?orient ;',
             '          wdt:P569 ?dob .',
+            '  FILTER(?orient != wd:Q1035954)',
             '  FILTER(MONTH(?dob) = ' + parseInt(month, 10) + ')',
             '  OPTIONAL { ?person wdt:P570 ?dod . }',
             '  OPTIONAL { ?person wdt:P18 ?image . }',
