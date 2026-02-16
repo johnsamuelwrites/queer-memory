@@ -1892,17 +1892,104 @@ textarea {
    ============================================================ */
 @media (max-width: 768px) {
     #site-header {
-        flex-direction: column;
-        gap: var(--space-sm);
-        padding: var(--space-sm) var(--space-md);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        align-items: center;
+        column-gap: var(--space-xs);
+        row-gap: 0.35rem;
+        padding: 0.35rem var(--space-sm);
+        min-height: auto;
+    }
+
+    .logo a {
+        font-size: var(--text-lg);
+    }
+
+    #site-nav {
+        grid-column: 1 / -1;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #site-nav.is-scrollable::after {
+        content: '\203A';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 2rem;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: var(--text-primary);
+        text-shadow: 0 0 1px var(--bg-primary);
+        background: linear-gradient(to right, transparent 0%, var(--bg-secondary) 45%, var(--bg-secondary) 100%);
+        border-left: 1px solid var(--border-default);
+        pointer-events: none;
+        opacity: 1;
+        z-index: 2;
+    }
+
+    #site-nav.is-scrollable.is-scrolled::before {
+        content: '\2039';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 1.8rem;
+        display: grid;
+        place-items: center;
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: var(--text-primary);
+        text-shadow: 0 0 1px var(--bg-primary);
+        background: linear-gradient(to left, transparent 0%, var(--bg-secondary) 45%, var(--bg-secondary) 100%);
+        border-right: 1px solid var(--border-default);
+        pointer-events: none;
+        opacity: 1;
+        z-index: 2;
+    }
+
+    #site-nav.is-scrollable.is-at-end::after {
+        opacity: 0;
     }
 
     #site-nav ul {
-        justify-content: center;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        width: auto;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+    }
+
+    #site-nav li {
+        flex: 0 0 auto;
+    }
+
+    #site-nav a {
+        padding: 0.2rem 0.5rem;
+        font-size: var(--text-xs);
+    }
+
+    .theme-toggle {
+        width: 2rem;
+        height: 2rem;
+        border-width: 1px;
+        font-size: var(--text-base);
     }
 
     .lang-switcher {
-        order: 10;
+        gap: 1px;
+    }
+
+    .lang-btn {
+        padding: 0.2rem 0.4rem;
     }
 
     .hero h1 {

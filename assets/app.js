@@ -86,6 +86,37 @@
         header.appendChild(wrapper);
     }
 
+    function setupMobileNavAffordance() {
+        var nav = document.getElementById('site-nav');
+        if (!nav) return;
+        var list = nav.querySelector('ul');
+        if (!list) return;
+
+        function updateAffordance() {
+            var isMobile = window.matchMedia('(max-width: 768px)').matches;
+            if (!isMobile) {
+                nav.classList.remove('is-scrollable', 'is-scrolled', 'is-at-end');
+                return;
+            }
+
+            var hasOverflow = list.scrollWidth > list.clientWidth + 2;
+            nav.classList.toggle('is-scrollable', hasOverflow);
+            if (!hasOverflow) {
+                nav.classList.remove('is-scrolled', 'is-at-end');
+                return;
+            }
+
+            var left = list.scrollLeft;
+            var maxLeft = list.scrollWidth - list.clientWidth;
+            nav.classList.toggle('is-scrolled', left > 1);
+            nav.classList.toggle('is-at-end', left >= maxLeft - 1);
+        }
+
+        list.addEventListener('scroll', updateAffordance, { passive: true });
+        window.addEventListener('resize', updateAffordance);
+        updateAffordance();
+    }
+
     // Apply theme immediately (before paint)
     applyTheme(getPreferredTheme());
 
@@ -100,6 +131,7 @@
     function initUI() {
         createToggleButton();
         createLangSwitcher();
+        setupMobileNavAffordance();
     }
 
     if (document.readyState === 'loading') {
