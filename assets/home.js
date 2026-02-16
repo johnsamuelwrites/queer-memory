@@ -505,6 +505,7 @@
             '  OPTIONAL { ?event wdt:P17 ?country . }',
             '  OPTIONAL { ?event wdt:P18 ?image . }',
             '  OPTIONAL { ?event wdt:P1132 ?participants . }',
+            '  FILTER(?date < NOW())',
             '  FILTER(YEAR(?date) >= 2020)',
             '  ' + wd.labelService(),
             '}',
