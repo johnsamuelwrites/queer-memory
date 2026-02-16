@@ -113,7 +113,7 @@
             '    bd:serviceParam wikibase:endpoint "www.wikidata.org";',
             '                    wikibase:api "EntitySearch";',
             '                    mwapi:search "' + escaped + '";',
-            '                    mwapi:language "' + lang + '".',
+            '                    mwapi:language "en".',
             '    ?item wikibase:apiOutputItem mwapi:item.',
             '  }',
             '  ?item wdt:P31 wd:Q5 .',
@@ -133,18 +133,15 @@
             '    bd:serviceParam wikibase:endpoint "www.wikidata.org";',
             '                    wikibase:api "EntitySearch";',
             '                    mwapi:search "' + escaped + '";',
-            '                    mwapi:language "' + lang + '".',
+            '                    mwapi:language "en".',
             '    ?item wikibase:apiOutputItem mwapi:item.',
             '  }',
-            '  { ?item wdt:P31 wd:Q6256 . }',
-            '  UNION',
-            '  { ?item wdt:P31 wd:Q3624078 . }',
-            '  UNION',
-            '  { ?item wdt:P31 wd:Q515 . }',
+            '  VALUES ?geoType { wd:Q6256 wd:Q3624078 wd:Q515 wd:Q56061 wd:Q47168 }',
+            '  ?item wdt:P31/wdt:P279* ?geoType .',
             '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  ' + wd.labelService(),
             '}',
-            'LIMIT 15'
+            'LIMIT 25'
         ].join('\n');
 
         /* Query 3: LGBT-specific entities (events, orgs, places, flags, media, rights) */
@@ -154,20 +151,21 @@
             '    bd:serviceParam wikibase:endpoint "www.wikidata.org";',
             '                    wikibase:api "EntitySearch";',
             '                    mwapi:search "' + escaped + '";',
-            '                    mwapi:language "' + lang + '".',
+            '                    mwapi:language "en".',
             '    ?item wikibase:apiOutputItem mwapi:item.',
             '  }',
             '  VALUES ?relatedType {',
-            '    wd:Q51404 wd:Q7242811 wd:Q64606659 wd:Q6458277',
-            '    wd:Q2945640 wd:Q61710650 wd:Q105321449 wd:Q1043639',
-            '    wd:Q20442589 wd:Q85133165 wd:Q17898',
-            '    wd:Q17888 wd:Q48264 wd:Q29469577 wd:Q62128088',
+            '    wd:Q64348974 wd:Q125506609 wd:Q130285134 wd:Q51404',
+            '    wd:Q64606659 wd:Q6458277 wd:Q64364539 wd:Q2945640',
+            '    wd:Q61710650 wd:Q105321449 wd:Q1043639 wd:Q61710689',
+            '    wd:Q62128088 wd:Q29469577 wd:Q7242811 wd:Q20442589',
+            '    wd:Q85133165 wd:Q17898 wd:Q17888 wd:Q48264',
             '  }',
-            '  ?item wdt:P31 ?relatedType .',
+            '  ?item wdt:P31/wdt:P279* ?relatedType .',
             '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  ' + wd.labelService(),
             '}',
-            'LIMIT 15'
+            'LIMIT 30'
         ].join('\n');
 
         /* Fire all three queries in parallel */
