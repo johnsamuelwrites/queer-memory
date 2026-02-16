@@ -21,15 +21,15 @@
      * Property P91 links a person to their sexual orientation.
      */
     var ORIENTATIONS = [
-        { qid: 'Q6636',     label: 'Homosexuality' },
-        { qid: 'Q6649',     label: 'Lesbianism' },
-        { qid: 'Q592',      label: 'Gay' },
-        { qid: 'Q43200',    label: 'Bisexuality' },
-        { qid: 'Q271534',   label: 'Pansexuality' },
-        { qid: 'Q724351',   label: 'Asexuality' },
-        { qid: 'Q51415',    label: 'Queer' },
+        { qid: 'Q6636', label: 'Homosexuality' },
+        { qid: 'Q6649', label: 'Lesbianism' },
+        { qid: 'Q592', label: 'Gay' },
+        { qid: 'Q43200', label: 'Bisexuality' },
+        { qid: 'Q271534', label: 'Pansexuality' },
+        { qid: 'Q724351', label: 'Asexuality' },
+        { qid: 'Q51415', label: 'Queer' },
         { qid: 'Q23912283', label: 'Demisexuality' },
-        { qid: 'Q2094204',  label: 'Polysexuality' }
+        { qid: 'Q2094204', label: 'Polysexuality' }
     ];
 
     /**
@@ -37,23 +37,40 @@
      * Property P21 links a person to their sex or gender.
      */
     var GENDER_IDENTITIES = [
-        { qid: 'Q189125',   label: 'Transgender' },
-        { qid: 'Q48270',    label: 'Non-binary' },
-        { qid: 'Q1052281',  label: 'Trans woman' },
-        { qid: 'Q2449503',  label: 'Trans man' },
-        { qid: 'Q505371',   label: 'Agender' },
+        { qid: 'Q189125', label: 'Transgender' },
+        { qid: 'Q48270', label: 'Non-binary' },
+        { qid: 'Q1052281', label: 'Trans woman' },
+        { qid: 'Q2449503', label: 'Trans man' },
+        { qid: 'Q505371', label: 'Agender' },
         { qid: 'Q12964198', label: 'Genderqueer' },
         { qid: 'Q18116794', label: 'Genderfluid' },
-        { qid: 'Q1097630',  label: 'Intersex' },
-        { qid: 'Q301702',   label: 'Two-spirit' },
-        { qid: 'Q48279',    label: 'Third gender' },
-        { qid: 'Q1062222',  label: 'Travesti' },
-        { qid: 'Q7130936',  label: 'Pangender' },
-        { qid: 'Q660882',   label: 'Hijra' },
-        { qid: 'Q746411',   label: 'Kathoey' },
-        { qid: 'Q1399232',  label: "Fa'afafine" },
-        { qid: 'Q3177577',  label: 'Muxe' },
-        { qid: 'Q3277905',  label: 'Mahu' }
+        { qid: 'Q1097630', label: 'Intersex' },
+        { qid: 'Q301702', label: 'Two-spirit' },
+        { qid: 'Q48279', label: 'Third gender' },
+        { qid: 'Q1062222', label: 'Travesti' },
+        { qid: 'Q7852710', label: 'Tumtum' },
+        { qid: 'Q17148251', label: 'Travesti (identity)' },
+        { qid: 'Q56388896', label: 'Calabai' },
+        { qid: 'Q65212675', label: 'Calalai' },
+        { qid: 'Q96000630', label: 'Genre X' },
+        { qid: 'Q106647045', label: 'Sekhet' },
+        { qid: 'Q2904759', label: 'Bissu' },
+        { qid: 'Q3333006', label: 'Mukhannathun' },
+        { qid: 'Q4700377', label: "'akava'ine" },
+        { qid: 'Q6538491', label: 'Lhamana' },
+        { qid: 'Q24886035', label: 'Mudoko dako' },
+        { qid: 'Q25035965', label: 'Koekchuch' },
+        { qid: 'Q30689479', label: 'Meti' },
+        { qid: 'Q108266757', label: 'Vakasalewalewa' },
+        { qid: 'Q130388254', label: 'Qariwarmi' },
+        { qid: 'Q130388275', label: 'Ubhatovyanjanaka' },
+        { qid: 'Q136443143', label: 'Tida wena' },
+        { qid: 'Q7130936', label: 'Pangender' },
+        { qid: 'Q660882', label: 'Hijra' },
+        { qid: 'Q746411', label: 'Kathoey' },
+        { qid: 'Q1399232', label: "Fa'afafine" },
+        { qid: 'Q3177577', label: 'Muxe' },
+        { qid: 'Q3277905', label: 'Mahu' }
     ];
 
     /* Flat maps for quick lookup */
@@ -68,8 +85,8 @@
        ---------------------------------------------------------- */
 
     function init() {
-        loadIdentityCards('orientations-grid',  ORIENTATIONS,       'Q17888', 'P91');
-        loadIdentityCards('genders-grid',       GENDER_IDENTITIES,  'Q48264', 'P21');
+        loadIdentityCards('orientations-grid', ORIENTATIONS, 'Q17888', 'P91');
+        loadIdentityCards('genders-grid', GENDER_IDENTITIES, 'Q48264', 'P21');
         loadPeopleCounts();
     }
 
@@ -333,17 +350,17 @@
             wd.fetchPeopleCounts('P91', orientationQids),
             wd.fetchPeopleCounts('P21', genderQids)
         ])
-        .then(function (results) {
-            doneLoading();
-            var orientationCounts = results[0];
-            var genderCounts = results[1];
-            renderPeopleCounts(container, orientationCounts, genderCounts);
-        })
-        .catch(function (err) {
-            doneLoading();
-            console.error('Failed to load people counts:', err);
-            wd.showError(container, 'Could not load Wikidata statistics.');
-        });
+            .then(function (results) {
+                doneLoading();
+                var orientationCounts = results[0];
+                var genderCounts = results[1];
+                renderPeopleCounts(container, orientationCounts, genderCounts);
+            })
+            .catch(function (err) {
+                doneLoading();
+                console.error('Failed to load people counts:', err);
+                wd.showError(container, 'Could not load Wikidata statistics.');
+            });
     }
 
     function renderPeopleCounts(container, orientationCounts, genderCounts) {
