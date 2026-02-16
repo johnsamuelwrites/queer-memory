@@ -20,6 +20,7 @@
         loadOnThisDay();
         loadFeaturedTimeline();
         loadDiscoverPeople();
+        loadUpcomingPrideEvents();
         loadRecentPrideEvents();
         loadFlagStrip();
     }
@@ -451,6 +452,44 @@
     }
 
     /* ----------------------------------------------------------
+       Section: Upcoming Pride events worldwide
+       ---------------------------------------------------------- */
+    function loadUpcomingPrideEvents() {
+        var container = document.getElementById('home-upcoming-pride');
+        if (!container) return;
+
+        var doneLoading = wd.showLoading(container);
+        var sparql = [
+            'SELECT ?event ?eventLabel ?date ?country ?countryLabel ?image ?participants WHERE {',
+            '  ?event wdt:P31/wdt:P279* wd:Q51404 .',
+            '  { ?event wdt:P585 ?date . } UNION { ?event wdt:P580 ?date . }',
+            '  FILTER(?date >= NOW())',
+            '  OPTIONAL { ?event wdt:P17 ?country . }',
+            '  OPTIONAL { ?event wdt:P18 ?image . }',
+            '  OPTIONAL { ?event wdt:P1132 ?participants . }',
+            '  ' + wd.labelService(),
+            '}',
+            'ORDER BY ?date',
+            'LIMIT 10'
+        ].join('\n');
+
+        wd.query(sparql)
+            .then(function (bindings) {
+                doneLoading();
+                renderPrideEvents(
+                    container,
+                    bindings,
+                    i18n ? i18n.t('home.noUpcomingPrideEvents') : 'No upcoming pride events found.',
+                    true
+                );
+            })
+            .catch(function () {
+                doneLoading();
+                wd.showError(container, i18n ? i18n.t('home.errorPride') : 'Could not load pride events.');
+            });
+    }
+
+    /* ----------------------------------------------------------
        Section: Recent Pride events worldwide
        ---------------------------------------------------------- */
     function loadRecentPrideEvents() {
@@ -476,7 +515,12 @@
         wd.query(sparql)
             .then(function (bindings) {
                 doneLoading();
-                renderPrideEvents(container, bindings);
+                renderPrideEvents(
+                    container,
+                    bindings,
+                    i18n ? i18n.t('home.noPrideEvents') : 'No recent pride events found.',
+                    false
+                );
             })
             .catch(function () {
                 doneLoading();
@@ -484,9 +528,9 @@
             });
     }
 
-    function renderPrideEvents(container, bindings) {
+    function renderPrideEvents(container, bindings, emptyMessage, showExactDate) {
         if (!bindings.length) {
-            container.appendChild(wd.el('p', 'qm-empty', i18n ? i18n.t('home.noPrideEvents') : 'No recent pride events found.'));
+            container.appendChild(wd.el('p', 'qm-empty', emptyMessage));
             return;
         }
 
@@ -521,7 +565,7 @@
             var date = wd.val(b, 'date');
             var country = wd.val(b, 'countryLabel');
             var meta = [];
-            if (date) meta.push(formatYear(date));
+            if (date) meta.push(showExactDate ? formatFullDate(date) : formatYear(date));
             if (country) meta.push(country);
             if (meta.length) {
                 card.appendChild(wd.el('span', 'pride-event-card__meta', meta.join(' \u00B7 ')));
@@ -614,6 +658,22 @@
             return String(year);
         }
         return isoDate.substring(0, 4);
+    }
+
+    function formatFullDate(isoDate) {
+        if (!isoDate) return '';
+        var date = new Date(isoDate);
+        if (isNaN(date.getTime())) return formatYear(isoDate);
+
+        try {
+            return new Intl.DateTimeFormat(lang || 'en', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }).format(date);
+        } catch (e) {
+            return date.toISOString().slice(0, 10);
+        }
     }
 
     /* ----------------------------------------------------------
