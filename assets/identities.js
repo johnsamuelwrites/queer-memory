@@ -47,6 +47,7 @@
         { qid: 'Q1097630',  label: 'Intersex' },
         { qid: 'Q301702',   label: 'Two-spirit' },
         { qid: 'Q48279',    label: 'Third gender' },
+        { qid: 'Q1062222',  label: 'Travesti' },
         { qid: 'Q7130936',  label: 'Pangender' },
         { qid: 'Q660882',   label: 'Hijra' },
         { qid: 'Q746411',   label: 'Kathoey' },
