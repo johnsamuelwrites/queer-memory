@@ -200,27 +200,8 @@
             'LIMIT 20'
         ].join('\n');
 
-        var fallbackEnglishSparql = [
-            'SELECT DISTINCT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
-            '  SERVICE wikibase:mwapi {',
-            '    bd:serviceParam wikibase:endpoint "www.wikidata.org";',
-            '                    wikibase:api "EntitySearch";',
-            '                    mwapi:search "' + escaped + '";',
-            '                    mwapi:language "en".',
-            '    ?item wikibase:apiOutputItem mwapi:item.',
-            '  }',
-            '  OPTIONAL { ?item wdt:P18 ?image . }',
-            '  OPTIONAL {',
-            '    ?article schema:about ?item ;',
-            '            schema:isPartOf <' + wikiUrl + '> .',
-            '  }',
-            '  ' + wd.labelService(),
-            '}',
-            'LIMIT 40'
-        ].join('\n');
-
         /* Fire queries in parallel and render incrementally as they complete */
-        var totalQueries = (lang === 'en') ? 5 : 6;
+        var totalQueries = 5;
         var pending = totalQueries;
         var successes = 0;
         var buckets = {
@@ -228,7 +209,6 @@
             country: [],
             lgbt: [],
             fallback: [],
-            fallbackEn: [],
             srsearch: []
         };
         var queryStates = {
@@ -238,25 +218,57 @@
             fallback: { label: 'General', state: 'pending' },
             srsearch: { label: 'Wiki search', state: 'pending' }
         };
-        if (lang !== 'en') {
-            queryStates.fallbackEn = { label: 'General (EN)', state: 'pending' };
-        }
+        var sourceFilters = {};
+        Object.keys(queryStates).forEach(function (key) {
+            sourceFilters[key] = true;
+        });
 
-        updateStatus(term, 0, pending, totalQueries);
-        renderProgress(pending, totalQueries, queryStates);
-
-        function finishOne() {
-            if (signal.aborted) return;
-            pending -= 1;
+        function rerender() {
             var mergedNow = mergeResults(
                 buckets.people,
                 buckets.country,
                 buckets.lgbt,
                 buckets.fallback,
-                buckets.fallbackEn,
                 buckets.srsearch
             );
-            renderResults(mergedNow, term, pending, totalQueries, queryStates);
+            var sourceCounts = countBySource(mergedNow, queryStates);
+            var filtered = applySourceFilters(mergedNow, sourceFilters);
+            renderResults(
+                filtered,
+                term,
+                pending,
+                totalQueries,
+                queryStates,
+                sourceFilters,
+                sourceCounts,
+                mergedNow.length,
+                function (sourceKey) {
+                    var keys = Object.keys(sourceFilters);
+                    var allActive = keys.every(function (k) { return sourceFilters[k]; });
+                    if (allActive) {
+                        keys.forEach(function (k) { sourceFilters[k] = (k === sourceKey); });
+                    } else {
+                        var activeCount = keys.reduce(function (count, k) {
+                            return count + (sourceFilters[k] ? 1 : 0);
+                        }, 0);
+                        if (sourceFilters[sourceKey] && activeCount === 1) {
+                            keys.forEach(function (k) { sourceFilters[k] = true; });
+                        } else {
+                            sourceFilters[sourceKey] = !sourceFilters[sourceKey];
+                        }
+                    }
+                    rerender();
+                }
+            );
+        }
+
+        updateStatus(term, 0, pending, totalQueries);
+        rerender();
+
+        function finishOne() {
+            if (signal.aborted) return;
+            pending -= 1;
+            rerender();
             if (pending === 0) {
                 doneLoading();
             }
@@ -322,15 +334,6 @@
                 onFailure(err);
             });
 
-        if (lang !== 'en') {
-            wd.query(fallbackEnglishSparql, { signal: signal })
-                .then(function (b) { onSuccess(b, 'fallbackEn', 'fallback'); })
-                .catch(function (err) {
-                    err = err || {};
-                    err._bucketKey = 'fallbackEn';
-                    onFailure(err);
-                });
-        }
     }
 
     /* --------------------------------------------------------
@@ -347,28 +350,60 @@
        Merge and deduplicate results from multiple queries.
        Countries first, then people, then LGBT entities.
        -------------------------------------------------------- */
-    function mergeResults(people, countries, lgbt, fallback, fallbackEn, srsearch) {
+    function mergeResults(people, countries, lgbt, fallback, srsearch) {
         var seen = {};
         var results = [];
 
-        function add(items) {
+        function add(items, sourceKey) {
             items.forEach(function (b) {
                 var id = wd.qid(b, 'item');
-                if (id && !seen[id]) {
-                    seen[id] = true;
+                if (!id) return;
+                if (!seen[id]) {
+                    b._sources = {};
+                    if (sourceKey) b._sources[sourceKey] = true;
+                    seen[id] = b;
                     results.push(b);
+                    return;
                 }
+                if (sourceKey) seen[id]._sources[sourceKey] = true;
             });
         }
 
-        add(countries);
-        add(people);
-        add(lgbt);
-        add(fallback || []);
-        add(fallbackEn || []);
-        add(srsearch || []);
+        add(countries, 'country');
+        add(people, 'people');
+        add(lgbt, 'lgbt');
+        add(fallback || [], 'fallback');
+        add(srsearch || [], 'srsearch');
 
         return results;
+    }
+
+    function countBySource(items, queryStates) {
+        var counts = {};
+        Object.keys(queryStates || {}).forEach(function (key) {
+            counts[key] = 0;
+        });
+        items.forEach(function (item) {
+            var sources = item._sources || {};
+            Object.keys(sources).forEach(function (key) {
+                if (Object.prototype.hasOwnProperty.call(counts, key)) {
+                    counts[key] += 1;
+                }
+            });
+        });
+        return counts;
+    }
+
+    function applySourceFilters(items, sourceFilters) {
+        return items.filter(function (item) {
+            var sources = item._sources || {};
+            var keys = Object.keys(sources);
+            if (!keys.length) return true;
+            for (var i = 0; i < keys.length; i += 1) {
+                if (sourceFilters[keys[i]]) return true;
+            }
+            return false;
+        });
     }
 
     /* --------------------------------------------------------
@@ -476,12 +511,11 @@
         }
     }
 
-    function renderProgress(pending, totalQueries, queryStates) {
+    function renderProgress(pending, totalQueries, queryStates, sourceFilters, sourceCounts, onToggleSource) {
         var existing = document.getElementById('search-progress');
         if (existing && existing.parentNode) {
             existing.parentNode.removeChild(existing);
         }
-        if (pending <= 0) return;
 
         var progress = wd.el('div', 'search-progress');
         progress.id = 'search-progress';
@@ -500,13 +534,23 @@
             if (meta.state === 'done') chipClass += 'search-progress__chip--done';
             else if (meta.state === 'error') chipClass += 'search-progress__chip--error';
             else chipClass += 'search-progress__chip--pending';
-            chips.appendChild(wd.el('span', chipClass, meta.label));
+            if (!sourceFilters[key]) chipClass += ' search-progress__chip--off';
+            var count = sourceCounts && Object.prototype.hasOwnProperty.call(sourceCounts, key) ? sourceCounts[key] : 0;
+            var chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = chipClass;
+            chip.textContent = meta.label + ' (' + count + ')';
+            chip.setAttribute('aria-pressed', sourceFilters[key] ? 'true' : 'false');
+            chip.addEventListener('click', function () {
+                onToggleSource(key);
+            });
+            chips.appendChild(chip);
         });
         progress.appendChild(chips);
         resultsEl.appendChild(progress);
     }
 
-    function renderResults(items, term, pending, totalQueries, queryStates) {
+    function renderResults(items, term, pending, totalQueries, queryStates, sourceFilters, sourceCounts, totalUnfiltered, onToggleSource) {
         updateStatus(term, items.length, pending, totalQueries);
 
         Array.prototype.slice.call(resultsEl.children).forEach(function (child) {
@@ -515,12 +559,23 @@
             }
         });
 
-        renderProgress(pending, totalQueries, queryStates || {});
+        renderProgress(
+            pending,
+            totalQueries,
+            queryStates || {},
+            sourceFilters || {},
+            sourceCounts || {},
+            onToggleSource || function () {}
+        );
 
         if (!items.length) {
             if (pending > 0) {
                 resultsEl.appendChild(
                     wd.el('p', 'qm-empty', i18n ? i18n.t('loading') : 'Loading from Wikidata\u2026')
+                );
+            } else if (totalUnfiltered > 0) {
+                resultsEl.appendChild(
+                    wd.el('p', 'qm-empty', 'No results match the current source filters.')
                 );
             } else {
                 statusEl.textContent = (i18n ? i18n.t('search.noResults') : 'No results found for') + ' \u201c' + term + '\u201d';
