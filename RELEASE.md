@@ -1,11 +1,14 @@
 # Release Notes
 
 ## Unreleased
-- Added city/country-specific timeline views and broader timeline/page script updates.
-- Improved homepage pride sections with upcoming vs recent date filtering, plus FR/ES translations.
-- Refined mobile navigation/header behavior for better usability on small screens.
-- Applied multiple Wikidata query fixes/optimizations, including notable people improvements.
-- Updated project docs (`README`, `CONTRIBUTING`) and added a root `.gitignore`.
+
+## 0.2.0
+- Added city/country timeline views and improved timeline script behavior across pages.
+- Enhanced search with progressive multi-filter support, reduced query load, and multi-source results.
+- Improved homepage pride sections (upcoming vs recent), plus broader FR/ES translation fixes.
+- Refined mobile usability, including header and jump navigation improvements.
+- Expanded content quality with updated identities data, notable people/query optimizations, and source badges/styling updates.
+- Updated project documentation and housekeeping (`README`, `CONTRIBUTING`, `.gitignore`).
 
 ## 0.1.0
 - Initial public release of the Queer Memory static site.
