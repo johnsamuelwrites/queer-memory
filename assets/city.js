@@ -13,17 +13,20 @@
     var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
     var HYBRID_THUMB_LIMIT = 9;
 
-    var PLACE_TYPES = [
+    var MEMORY_TYPES = [
         'Q2945640',
+        'Q134499285',
         'Q118108259',
         'Q61710650',
         'Q64364539',
         'Q61710689',
         'Q62128088',
+        'Q136703445',
         'Q29469577'
     ];
 
     var ORG_TYPES = [
+        'Q2945640',
         'Q64606659',
         'Q6458277',
     ];
@@ -47,6 +50,19 @@
         'Q62018250'
     ];
 
+    var LGBT_PLACE_TYPES = [
+        'Q1531507',
+        'Q2945640',
+        'Q6458286',
+        'Q51167626',
+        'Q61696039',
+        'Q105321449',
+        'Q116025472',
+        'Q116167940',
+        'Q137682531',
+        'Q137682535'
+    ];
+
     function init() {
         var qid = getQid();
         if (!qid) {
@@ -58,6 +74,7 @@
         renderLinks('city-links', '', qid);
         loadCityHeader(qid);
         loadPlaces(qid);
+        loadLgbtPlaces(qid);
         loadOrganizations(qid);
         loadEvents(qid);
         loadPride(qid);
@@ -130,7 +147,7 @@
 
         var sparql = [
             'SELECT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
-            '  VALUES ?type { ' + PLACE_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
+            '  VALUES ?type { ' + MEMORY_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P131 wd:' + qid + ' }',
             '  UNION',
@@ -139,6 +156,10 @@
             '  { ?item wdt:P131/wdt:P131 wd:' + qid + ' }',
             '  UNION',
             '  { ?item wdt:P276/wdt:P131 wd:' + qid + ' }',
+            '  FILTER NOT EXISTS {',
+            '    VALUES ?lgbtType { ' + LGBT_PLACE_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
+            '    ?item wdt:P31 ?lgbtType .',
+            '  }',
             '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
@@ -198,6 +219,45 @@
                 doneLoading();
                 console.error('Failed to load organizations:', err);
                 wd.showError(container, 'Could not load organizations.');
+            });
+    }
+
+    function loadLgbtPlaces(qid) {
+        var container = document.getElementById('city-lgbt-places-list');
+        if (!container) return;
+        var doneLoading = wd.showLoading(container);
+
+        var sparql = [
+            'SELECT ?item ?itemLabel ?itemDescription ?type ?typeLabel ?image ?article WHERE {',
+            '  VALUES ?type { ' + LGBT_PLACE_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
+            '  ?item wdt:P31 ?type .',
+            '  { ?item wdt:P131 wd:' + qid + ' }',
+            '  UNION',
+            '  { ?item wdt:P276 wd:' + qid + ' }',
+            '  UNION',
+            '  { ?item wdt:P131/wdt:P131 wd:' + qid + ' }',
+            '  UNION',
+            '  { ?item wdt:P276/wdt:P131 wd:' + qid + ' }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
+            '  OPTIONAL {',
+            '    ?article schema:about ?item ;',
+            '            schema:isPartOf <' + wikiUrl + '> .',
+            '  }',
+            '  ' + wd.labelService(),
+            '}',
+            'ORDER BY ?itemLabel',
+            'LIMIT 300'
+        ].join('\n');
+
+        wd.query(sparql)
+            .then(function (bindings) {
+                doneLoading();
+                renderCards(container, bindings, 'item');
+            })
+            .catch(function (err) {
+                doneLoading();
+                console.error('Failed to load LGBT places:', err);
+                wd.showError(container, 'Could not load LGBT places.');
             });
     }
 
@@ -401,6 +461,7 @@
             var card = wd.el('article', cardClass);
             var label = wd.val(b, key + 'Label');
             var desc = wd.val(b, key + 'Description');
+            var typeLabel = wd.val(b, 'typeLabel');
             var date = dateKey ? formatYear(wd.val(b, dateKey)) : '';
             var qid = wd.qid(b, key);
 
@@ -418,6 +479,10 @@
 
             if (date) {
                 card.appendChild(wd.el('span', 'history-card__meta', date));
+            }
+
+            if (typeLabel) {
+                card.appendChild(wd.el('span', 'history-card__tag', typeLabel));
             }
 
             if (desc) {

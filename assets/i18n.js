@@ -420,7 +420,7 @@ QM.i18n = (function () {
         'country.dataNote':     { en: 'Data is queried live from the Wikidata Query Service and reflects current coverage on Wikidata. You can help improve this profile by contributing to WikiProject LGBT, expanding related Wikipedia articles, or adding media to Wikimedia Commons.', fr: 'Les données sont interrogées en direct depuis le Wikidata Query Service et reflètent la couverture actuelle de Wikidata. Vous pouvez améliorer ce profil en contribuant au WikiProject LGBT.', es: 'Los datos se consultan en vivo desde el Wikidata Query Service y reflejan la cobertura actual de Wikidata. Puedes mejorar este perfil contribuyendo al WikiProject LGBT.' },
 
         /* ---- City profile page sections ---- */
-        'city.places':          { en: 'Places & Memory',        fr: 'Lieux & Mémoire',          es: 'Lugares y Memoria' },
+        'city.places':          { en: 'Memory',                 fr: 'Mémoire',                  es: 'Memoria' },
         'city.orgs':            { en: 'Organizations',           fr: 'Organisations',             es: 'Organizaciones' },
         'city.events':          { en: 'Events & Protests',       fr: 'Événements & Manifestations', es: 'Eventos y Protestas' },
         'city.pride':           { en: 'Pride & Festivals',       fr: 'Fiertés & Festivals',      es: 'Orgullo y Festivales' },
