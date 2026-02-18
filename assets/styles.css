@@ -869,6 +869,36 @@ body::before {
     padding: var(--space-lg);
 }
 
+/* Country/city profile section lists */
+.profile-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: var(--space-md);
+}
+
+.profile-cards-grid .history-card.card {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: var(--space-md);
+}
+
+.profile-cards-grid .history-card__title {
+    font-size: var(--text-base);
+}
+
+.profile-cards-grid .history-card__desc {
+    margin-bottom: var(--space-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.profile-cards-grid .history-card__links {
+    margin-top: auto;
+}
+
 /* Legal status grid (populated by JS) */
 .legal-status-grid {
     display: grid;
@@ -2102,6 +2132,10 @@ textarea {
     }
 
     .country-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-cards-grid {
         grid-template-columns: 1fr;
     }
 
