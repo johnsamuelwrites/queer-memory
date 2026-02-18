@@ -11,6 +11,7 @@
     var i18n = QM.i18n;
     var lang = i18n ? i18n.getLang() : 'en';
     var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
+    var HYBRID_THUMB_LIMIT = 9;
 
     var PLACE_TYPES = [
         'Q2945640',
@@ -128,7 +129,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
             '  VALUES ?type { ' + PLACE_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P131 wd:' + qid + ' }',
@@ -138,6 +139,7 @@
             '  { ?item wdt:P131/wdt:P131 wd:' + qid + ' }',
             '  UNION',
             '  { ?item wdt:P276/wdt:P131 wd:' + qid + ' }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -166,7 +168,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
             '  VALUES ?type { ' + ORG_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P159 wd:' + qid + ' }',
@@ -176,6 +178,7 @@
             '  { ?item wdt:P159/wdt:P131 wd:' + qid + ' }',
             '  UNION',
             '  { ?item wdt:P131/wdt:P131 wd:' + qid + ' }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -204,7 +207,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?date ?image ?article WHERE {',
             '  VALUES ?type { ' + EVENT_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P276 wd:' + qid + ' }',
@@ -215,6 +218,7 @@
             '  UNION',
             '  { ?item wdt:P131/wdt:P131 wd:' + qid + ' }',
             '  OPTIONAL { ?item wdt:P585 ?date . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -243,7 +247,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?date ?image ?article WHERE {',
             '  ?item wdt:P31/wdt:P279* wd:' + PRIDE_TYPE + ' .',
             '  { ?item wdt:P131 wd:' + qid + ' }',
             '  UNION',
@@ -253,6 +257,7 @@
             '  UNION',
             '  { ?item wdt:P276/wdt:P131 wd:' + qid + ' }',
             '  OPTIONAL { ?item wdt:P585 ?date . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -281,7 +286,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?date ?image ?article WHERE {',
             '  VALUES ?type { ' + CULTURE_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  { ?item wdt:P131 wd:' + qid + ' }',
@@ -294,6 +299,7 @@
             '  OPTIONAL { ?item wdt:P577 ?pubDate . }',
             '  OPTIONAL { ?item wdt:P571 ?startDate . }',
             '  BIND(COALESCE(?pubDate, ?startDate) AS ?date)',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -322,7 +328,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?dob ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?dob ?image ?article WHERE {',
             '  ?item wdt:P31 wd:Q5 ;',
             '        wdt:P91 ?orient ;',
             '        wdt:P19 ?birthplace .',
@@ -331,6 +337,7 @@
             '  UNION',
             '  { ?item wdt:P19/wdt:P131 wd:' + qid + ' }',
             '  OPTIONAL { ?item wdt:P569 ?dob . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -378,13 +385,34 @@
                 unique.push(b);
             }
         });
+        unique.sort(function (a, b) {
+            var aHasImage = wd.val(a, 'image') ? 1 : 0;
+            var bHasImage = wd.val(b, 'image') ? 1 : 0;
+            return bHasImage - aHasImage;
+        });
 
+        var thumbBudget = HYBRID_THUMB_LIMIT;
         unique.forEach(function (b) {
-            var card = wd.el('article', 'history-card card');
+            var imgUrl = wd.val(b, 'image');
+            var useThumb = !!imgUrl && thumbBudget > 0;
+            if (useThumb) thumbBudget -= 1;
+
+            var cardClass = useThumb ? 'history-card card history-card--thumb' : 'history-card card';
+            var card = wd.el('article', cardClass);
             var label = wd.val(b, key + 'Label');
             var desc = wd.val(b, key + 'Description');
             var date = dateKey ? formatYear(wd.val(b, dateKey)) : '';
             var qid = wd.qid(b, key);
+
+            if (useThumb) {
+                var imgWrap = wd.el('div', 'history-card__thumb');
+                var img = document.createElement('img');
+                img.src = wd.thumb(imgUrl, 360);
+                img.alt = '';
+                img.loading = 'lazy';
+                imgWrap.appendChild(img);
+                card.appendChild(imgWrap);
+            }
 
             card.appendChild(wd.el('h3', 'history-card__title', label));
 

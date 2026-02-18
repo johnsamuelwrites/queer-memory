@@ -11,6 +11,7 @@
     var i18n = QM.i18n;
     var lang = i18n ? i18n.getLang() : 'en';
     var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
+    var HYBRID_THUMB_LIMIT = 9;
 
     var PLACE_TYPES = [
         'Q2945640',
@@ -129,9 +130,10 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
             '  ?item wdt:P31 wd:Q17898 .',
             '  ?item wdt:P17 wd:' + qid + ' .',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -160,13 +162,14 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT DISTINCT ?item ?itemLabel ?itemDescription ?article WHERE {',
+            'SELECT DISTINCT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
             '  VALUES ?type { wd:Q130262508 wd:Q125143610 }',
             '  ?item wdt:P31 ?type .',
             '  OPTIONAL { ?item wdt:P17 ?c1 . }',
             '  OPTIONAL { ?item wdt:P921 ?c2 . }',
             '  BIND(COALESCE(?c1, ?c2) AS ?country)',
             '  FILTER(?country = wd:' + qid + ')',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -195,10 +198,11 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?type ?typeLabel ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?type ?typeLabel ?image ?article WHERE {',
             '  VALUES ?type { ' + PLACE_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  ?item wdt:P17 wd:' + qid + ' .',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -227,12 +231,13 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?image ?article WHERE {',
             '  VALUES ?type { ' + ORG_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  ?item wdt:P17 wd:' + qid + ' .',
             '  OPTIONAL { ?item wdt:P159 ?hq . }',
             '  OPTIONAL { ?item wdt:P131 ?loc . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -261,11 +266,12 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?date ?image ?article WHERE {',
             '  VALUES ?type { ' + EVENT_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  ?item wdt:P17 wd:' + qid + ' .',
             '  OPTIONAL { ?item wdt:P585 ?date . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -294,10 +300,11 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?date ?image ?article WHERE {',
             '  ?item wdt:P31 wd:' + PRIDE_TYPE + ' .',
             '  ?item wdt:P17 wd:' + qid + ' .',
             '  OPTIONAL { ?item wdt:P585 ?date . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -326,7 +333,7 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?date ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?date ?image ?article WHERE {',
             '  VALUES ?type { ' + CULTURE_TYPES.map(function (q) { return 'wd:' + q; }).join(' ') + ' }',
             '  ?item wdt:P31 ?type .',
             '  OPTIONAL { ?item wdt:P17 ?c1 . }',
@@ -336,6 +343,7 @@
             '  OPTIONAL { ?item wdt:P577 ?pubDate . }',
             '  OPTIONAL { ?item wdt:P571 ?startDate . }',
             '  BIND(COALESCE(?pubDate, ?startDate) AS ?date)',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -383,13 +391,34 @@
                 unique.push(b);
             }
         });
+        unique.sort(function (a, b) {
+            var aHasImage = wd.val(a, 'image') ? 1 : 0;
+            var bHasImage = wd.val(b, 'image') ? 1 : 0;
+            return bHasImage - aHasImage;
+        });
 
+        var thumbBudget = HYBRID_THUMB_LIMIT;
         unique.forEach(function (b) {
-            var card = wd.el('article', 'history-card card');
+            var imgUrl = wd.val(b, 'image');
+            var useThumb = !!imgUrl && thumbBudget > 0;
+            if (useThumb) thumbBudget -= 1;
+
+            var cardClass = useThumb ? 'history-card card history-card--thumb' : 'history-card card';
+            var card = wd.el('article', cardClass);
             var label = wd.val(b, key + 'Label');
             var desc = wd.val(b, key + 'Description');
             var date = dateKey ? formatYear(wd.val(b, dateKey)) : '';
             var qid = wd.qid(b, key);
+
+            if (useThumb) {
+                var imgWrap = wd.el('div', 'history-card__thumb');
+                var img = document.createElement('img');
+                img.src = wd.thumb(imgUrl, 360);
+                img.alt = '';
+                img.loading = 'lazy';
+                imgWrap.appendChild(img);
+                card.appendChild(imgWrap);
+            }
 
             card.appendChild(wd.el('h3', 'history-card__title', label));
 

@@ -11,6 +11,7 @@
     var i18n = QM.i18n;
     var lang = i18n ? i18n.getLang() : 'en';
     var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
+    var HYBRID_THUMB_LIMIT = 9;
 
     /* ----------------------------------------------------------
        Configuration - model QIDs (WikiProject LGBT)
@@ -70,10 +71,11 @@
         var typeQids = TIMELINE_TYPES.map(function (t) { return t.qid; });
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?type ?typeLabel ?country ?countryLabel ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?type ?typeLabel ?country ?countryLabel ?image ?article WHERE {',
             '  ' + wd.valuesClause('?type', typeQids),
             '  ?item wdt:P31 ?type .',
             '  OPTIONAL { ?item wdt:P17 ?country . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -111,14 +113,35 @@
                 unique.push(b);
             }
         });
+        unique.sort(function (a, b) {
+            var aHasImage = wd.val(a, 'image') ? 1 : 0;
+            var bHasImage = wd.val(b, 'image') ? 1 : 0;
+            return bHasImage - aHasImage;
+        });
 
+        var thumbBudget = HYBRID_THUMB_LIMIT;
         unique.forEach(function (b) {
-            var card = wd.el('article', 'history-card card');
+            var imgUrl = wd.val(b, 'image');
+            var useThumb = !!imgUrl && thumbBudget > 0;
+            if (useThumb) thumbBudget -= 1;
+
+            var cardClass = useThumb ? 'history-card card history-card--thumb' : 'history-card card';
+            var card = wd.el('article', cardClass);
             var itemQid = wd.qid(b, 'item');
             var itemLabel = wd.val(b, 'itemLabel');
             var itemDesc = wd.val(b, 'itemDescription');
             var typeLabel = wd.val(b, 'typeLabel');
             var countryLabel = wd.val(b, 'countryLabel');
+
+            if (useThumb) {
+                var imgWrap = wd.el('div', 'history-card__thumb');
+                var img = document.createElement('img');
+                img.src = wd.thumb(imgUrl, 360);
+                img.alt = '';
+                img.loading = 'lazy';
+                imgWrap.appendChild(img);
+                card.appendChild(imgWrap);
+            }
 
             var title = wd.el('h3', 'history-card__title', itemLabel);
             card.appendChild(title);
@@ -137,13 +160,7 @@
 
             var links = wd.el('div', 'history-card__links');
             var articleUrl = wd.val(b, 'article');
-            var link = document.createElement('a');
-            link.href = articleUrl || wd.entityUrl(itemQid);
-            link.target = '_blank';
-            link.rel = 'noopener';
-            link.textContent = articleUrl ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia') : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
-            link.className = 'identity-card__link';
-            links.appendChild(link);
+            appendPrimaryEntityLink(links, articleUrl, itemQid);
             card.appendChild(links);
 
             container.appendChild(card);
@@ -272,6 +289,11 @@
                 unique.push(b);
             }
         });
+        unique.sort(function (a, b) {
+            var aHasImage = wd.val(a, 'image') ? 1 : 0;
+            var bHasImage = wd.val(b, 'image') ? 1 : 0;
+            return bHasImage - aHasImage;
+        });
 
         unique.forEach(function (b) {
             var card = wd.el('article', 'history-person-card card');
@@ -303,13 +325,7 @@
 
             var links = wd.el('div', 'history-card__links');
             var articleUrl = wd.val(b, 'article');
-            var link = document.createElement('a');
-            link.href = articleUrl || wd.entityUrl(personQid);
-            link.target = '_blank';
-            link.rel = 'noopener';
-            link.textContent = articleUrl ? (i18n ? i18n.t('link.wikipedia') : 'Wikipedia') : (i18n ? i18n.t('link.wikidata') : 'Wikidata');
-            link.className = 'identity-card__link';
-            links.appendChild(link);
+            appendPrimaryEntityLink(links, articleUrl, personQid);
             card.appendChild(links);
 
             container.appendChild(card);
@@ -322,6 +338,26 @@
         if (!start) return '';
         if (dod) return start + ' - ' + formatYear(dod);
         return start;
+    }
+
+    function appendPrimaryEntityLink(container, articleUrl, qid) {
+        if (articleUrl) {
+            var wpLink = document.createElement('a');
+            wpLink.href = articleUrl;
+            wpLink.target = '_blank';
+            wpLink.rel = 'noopener';
+            wpLink.textContent = i18n ? i18n.t('link.wikipedia') : 'Wikipedia';
+            wpLink.className = 'identity-card__link';
+            container.appendChild(wpLink);
+        }
+
+        var wdLink = document.createElement('a');
+        wdLink.href = wd.entityUrl(qid);
+        wdLink.target = '_blank';
+        wdLink.rel = 'noopener';
+        wdLink.textContent = i18n ? i18n.t('link.wikidata') : 'Wikidata';
+        wdLink.className = 'identity-card__link';
+        container.appendChild(wdLink);
     }
 
     function formatYear(isoDate) {

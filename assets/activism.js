@@ -11,6 +11,7 @@
     var i18n = QM.i18n;
     var lang = i18n ? i18n.getLang() : 'en';
     var wikiUrl = i18n ? i18n.wikiUrl() : 'https://en.wikipedia.org/';
+    var HYBRID_THUMB_LIMIT = 9;
 
     /* ----------------------------------------------------------
        Configuration - model QIDs (WikiProject LGBT)
@@ -121,10 +122,11 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?event ?eventLabel ?eventDescription ?country ?countryLabel ?date ?article WHERE {',
+            'SELECT ?event ?eventLabel ?eventDescription ?country ?countryLabel ?date ?image ?article WHERE {',
             '  ?event wdt:P31 wd:Q125506609 .',
             '  OPTIONAL { ?event wdt:P17 ?country . }',
             '  OPTIONAL { ?event wdt:P585 ?date . }',
+            '  OPTIONAL { ?event wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?event ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -159,10 +161,11 @@
         var doneLoading = wd.showLoading(container);
 
         var sparql = [
-            'SELECT ?event ?eventLabel ?eventDescription ?country ?countryLabel ?date ?article WHERE {',
+            'SELECT ?event ?eventLabel ?eventDescription ?country ?countryLabel ?date ?image ?article WHERE {',
             '  ?event wdt:P31 wd:Q51404 .',
             '  OPTIONAL { ?event wdt:P17 ?country . }',
             '  OPTIONAL { ?event wdt:P585 ?date . }',
+            '  OPTIONAL { ?event wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?event ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -240,10 +243,11 @@
         var orgTypes = ['Q64606659', 'Q6458277'];
 
         var sparql = [
-            'SELECT ?item ?itemLabel ?itemDescription ?type ?typeLabel ?country ?countryLabel ?article WHERE {',
+            'SELECT ?item ?itemLabel ?itemDescription ?type ?typeLabel ?country ?countryLabel ?image ?article WHERE {',
             '  ' + wd.valuesClause('?type', orgTypes),
             '  ?item wdt:P31 ?type .',
             '  OPTIONAL { ?item wdt:P17 ?country . }',
+            '  OPTIONAL { ?item wdt:P18 ?image . }',
             '  OPTIONAL {',
             '    ?article schema:about ?item ;',
             '            schema:isPartOf <' + wikiUrl + '> .',
@@ -286,10 +290,30 @@
                 unique.push(b);
             }
         });
+        unique.sort(function (a, b) {
+            var aHasImage = wd.val(a, 'image') ? 1 : 0;
+            var bHasImage = wd.val(b, 'image') ? 1 : 0;
+            return bHasImage - aHasImage;
+        });
 
+        var thumbBudget = HYBRID_THUMB_LIMIT;
         unique.forEach(function (b) {
-            var card = wd.el('article', 'history-card card');
+            var imgUrl = wd.val(b, 'image');
+            var useThumb = !!imgUrl && thumbBudget > 0;
+            if (useThumb) thumbBudget -= 1;
+
+            var cardClass = useThumb ? 'history-card card history-card--thumb' : 'history-card card';
+            var card = wd.el('article', cardClass);
             var itemQid = wd.qid(b, itemKey);
+            if (useThumb) {
+                var imgWrap = wd.el('div', 'history-card__thumb');
+                var img = document.createElement('img');
+                img.src = wd.thumb(imgUrl, 360);
+                img.alt = '';
+                img.loading = 'lazy';
+                imgWrap.appendChild(img);
+                card.appendChild(imgWrap);
+            }
             var title = wd.el('h3', 'history-card__title', wd.val(b, itemKey + 'Label'));
             card.appendChild(title);
 
@@ -334,6 +358,11 @@
                 seen[id] = true;
                 unique.push(b);
             }
+        });
+        unique.sort(function (a, b) {
+            var aHasImage = wd.val(a, 'image') ? 1 : 0;
+            var bHasImage = wd.val(b, 'image') ? 1 : 0;
+            return bHasImage - aHasImage;
         });
 
         unique.forEach(function (b) {
@@ -393,13 +422,34 @@
                 unique.push(b);
             }
         });
+        unique.sort(function (a, b) {
+            var aHasImage = wd.val(a, 'image') ? 1 : 0;
+            var bHasImage = wd.val(b, 'image') ? 1 : 0;
+            return bHasImage - aHasImage;
+        });
 
+        var thumbBudget = HYBRID_THUMB_LIMIT;
         unique.forEach(function (b) {
-            var card = wd.el('article', 'history-card card');
+            var imgUrl = wd.val(b, 'image');
+            var useThumb = !!imgUrl && thumbBudget > 0;
+            if (useThumb) thumbBudget -= 1;
+
+            var cardClass = useThumb ? 'history-card card history-card--thumb' : 'history-card card';
+            var card = wd.el('article', cardClass);
             var itemQid = wd.qid(b, 'item');
             var label = wd.val(b, 'itemLabel');
             var typeLabel = wd.val(b, 'typeLabel');
             var countryLabel = wd.val(b, 'countryLabel');
+
+            if (useThumb) {
+                var imgWrap = wd.el('div', 'history-card__thumb');
+                var img = document.createElement('img');
+                img.src = wd.thumb(imgUrl, 360);
+                img.alt = '';
+                img.loading = 'lazy';
+                imgWrap.appendChild(img);
+                card.appendChild(imgWrap);
+            }
 
             card.appendChild(wd.el('h3', 'history-card__title', label));
 
