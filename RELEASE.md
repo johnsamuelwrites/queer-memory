@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.3.0
+- Made country and city profile pages more compact with reusable profile card grids and shorter card descriptions.
+- Added Wikidata/Commons image thumbnails to the first image-backed cards across places, history, activism, culture, country, and city views.
+- Expanded city profiles with a dedicated Places section separate from Memory, including additional LGBT place types and type labels.
+- Improved city-level coverage for memory, organizations, events, pride, culture, and people by broadening location queries and image support.
+- Cleaned up README project links formatting.
+
 ## 0.2.0
 - Added city/country timeline views and improved timeline script behavior across pages.
 - Enhanced search with progressive multi-filter support, reduced query load, and multi-source results.
