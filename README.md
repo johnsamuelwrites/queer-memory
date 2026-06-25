@@ -61,6 +61,10 @@ For data improvements, consider joining [WikiProject LGBT](https://www.wikidata.
 ## Release Notes
 Release history is tracked in `RELEASE.md`.
 
+## Archives and Releases
+* [Zenodo](https://doi.org/10.5281/zenodo.20843960)
+* [Release Notes](RELEASE.md)
+
 ## License & Attribution
 Code in this repository is licensed under the GNU AGPL v3. See `LICENSE`.
 
